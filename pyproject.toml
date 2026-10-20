@@ -1,0 +1,16 @@
+[project]
+name = "cmeee-ner"
+version = "0.2.0"
+description = "中文医学实体抽取：最小训练与复现链路"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "torch==2.8.0",
+    "transformers==4.57.6",
+    "safetensors>=0.6,<0.8",
+    "tensorboard>=2.20,<2.21",
+    "numpy>=2.2,<2.4",
+    "jieba==0.42.1",
+]
+
+[tool.uv]
+package = false

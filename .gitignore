@@ -1,0 +1,35 @@
+# Local environments and secrets
+.venv/
+.cache/
+.env
+.env.*
+
+# Datasets, checkpoints, outputs, and private evidence
+data/
+models/
+runs/
+evidence/
+private/
+deliverables/
+report-source/
+output/
+
+# Generated and potentially licensed artifacts
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.jsonl
+*.pt
+*.pth
+*.safetensors
+*.pdf
+*.zip
+*.mp4
+*.mov
+*.mp3
+*.wav
+*.png
+*.jpg
+*.jpeg
+*.webp
+.DS_Store
