@@ -1,0 +1,15 @@
+bad1e68de20ed2fae573b55c20e5f615883326636c871bb5e4fb188e541bfee3  evidence/stage3/N1-lr-1e-05.log
+869963bfa17fecc4b4c9a696d99a08fb15ded379b0aeb4910899f367ed0498f8  evidence/stage3/N1-lr-3e-05.log
+2f49b64439af2e70c236379cfa8116691ccacec847b03c6c7f5bf6154652d869  evidence/stage3/N1-lr-5e-05.log
+8c56f45be59e6bbd78feeb8e2afbeaa9f45778247771ee0cb316ced1588613e8  evidence/stage3/N1-rope-off.log
+3954e31a9cf24a26f5d110d9268b57cd2b430c592b5fc714eacebd9e8edda110  evidence/stage3/N1-rope-off-resume.log
+a8087dfe577670af53ac45beac33cfc6e822d353ef87d3145435e6b5984b40d7  evidence/stage3/N1-rope-off-resume-02.log
+562924d12691cf5316a8f05284d5262927197d853bdcb4152e26db29a5d24d67  evidence/stage4/N1-seed20261020-segment-00.log
+f2281a8d565f0fbc7ded15baf63b7f4a35f1e37c50c0e81b857d05595376bdac  evidence/stage4/N1-seed20261021-segment-00.log
+c45f8667f240935d6d96455973790335c56c48b00199ec443d74e068e8d849d3  evidence/stage6-template-supplement/N1-rope-off-lr-1e-05-seed20261019-segment-00.log
+cdadd71021c003293ec8d6133d58252fe7053767a74536ad41cb74b392d6c46d  evidence/stage6-template-supplement/N1-rope-off-lr-3e-05-seed20261019-segment-00.log
+9a7707dee66c98190d4ecf9036d524ec2f597180fe0bf87ac435682d07e6f56a  evidence/stage6-template-supplement/N1-rope-off-lr-5e-05-seed20261020-segment-00.log
+aa669458c91d840802d2a603dda778edb35e8324b3ffa77a81295ddaed3a3270  evidence/stage6-template-supplement/N1-rope-off-lr-5e-05-seed20261021-segment-00.log
+4d792728243724ca49d935974acfbaa32a73cdac0fcb7d808275fcc064d5a198  evidence/stage6-parameter-report-audit/cleanroom-20261020T144617/full5000.log
+e7a864d85e6735138b2c70ee9fd1969a7b3982caa5575faa2bd791ed5218d49a  evidence/stage6-template-supplement/gpu-verification-console.log
+393e79fe2271566041c2f56928d0f6ec620a77945c3fe328c6cc928429395697  evidence/报告引用日志核查说明.md
