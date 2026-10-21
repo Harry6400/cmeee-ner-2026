@@ -1,0 +1,19 @@
+{
+  "dataset": "CMeEE-V2",
+  "coordinates": "Unicode codepoints;[start,end);official V2 already half-open",
+  "seed": 20261019,
+  "evaluation_seed": 20261020,
+  "development_fraction_of_groups": 0.1,
+  "evaluation_size": 500,
+  "exact_cross_official_split_policy": "quarantine official-training rows only",
+  "near_duplicate_policy": "candidate audit and disclosure;no silent deletion",
+  "near_duplicate_comparisons": [
+    "train_vs_dev",
+    "train_and_dev_vs_holdout"
+  ],
+  "holdout_semantic_inspection_for_tuning": false,
+  "same_text_annotation_variants": "flag;never modify official reference annotations",
+  "primary_metric": "strict entity start+end+type micro P/R/F1",
+  "phase1_paid_api_calls": 0,
+  "phase1_training": false
+}

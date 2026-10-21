@@ -25,6 +25,28 @@ uv run --locked python scripts/ner_cli.py \
   --entities '[{"start":2,"end":4,"type":"sym","text":"发热"}]'
 ```
 
+## Data preparation
+
+Use an authorized CMeEE-V2 archive stored outside this repository. Preparation writes local files under the ignored `data/` directory; no corpus or generated split is included in Git. Review `configs/data-protocol.json` and `THIRD_PARTY_NOTICES.md` before use.
+
+```sh
+uv run --locked python scripts/prepare_data.py \
+  --archive /path/to/CMeEE-V2.zip \
+  --output data \
+  --seed 20261019 \
+  --evaluation-size 500
+
+uv run --locked python scripts/prepare_data.py --output data --verify
+```
+
+The preparation checks character offsets and labels, groups identical text before splitting, quarantines exact train-to-holdout overlap, and records a heuristic near-overlap audit. It does not train a model or call an API.
+
+Run the synthetic boundary tests with:
+
+```sh
+python3 -B -m unittest discover -s tests -p 'test_prepare_data.py' -v
+```
+
 ## Data and model assets
 
 Dataset archives, pretrained models, trained checkpoints, and experiment outputs are not included. Obtain each asset from its authoritative source, review its license, and keep it outside version control. See `THIRD_PARTY_NOTICES.md` for the project-level asset boundary.
