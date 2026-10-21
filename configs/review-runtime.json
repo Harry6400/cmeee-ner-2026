@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "cpu_threads": 4,
+  "inference_micro_batch": 4,
+  "max_input_characters": 4000,
+  "repair_policy": {
+    "min_term_count": 3,
+    "min_term_length": 3,
+    "min_type_purity": 0.9,
+    "context_chars": 8,
+    "min_context_similarity": 0.5,
+    "min_context_margin": 0.15,
+    "min_context_type_examples": 2,
+    "api_repair": "drop only overflow occurrence when all real occurrences of same surface/type already covered; otherwise fail closed"
+  },
+  "selected_model_seed": 20261019,
+  "model_manifest": "models/trained/manifest.json",
+  "default_live_method": "N1",
+  "new_api_calls": false,
+  "gpu_enabled": false
+}
