@@ -50,3 +50,11 @@ python3 -B -m unittest discover -s tests -p 'test_prepare_data.py' -v
 ## Data and model assets
 
 Dataset archives, pretrained models, trained checkpoints, and experiment outputs are not included. Obtain each asset from its authoritative source, review its license, and keep it outside version control. See `THIRD_PARTY_NOTICES.md` for the project-level asset boundary.
+
+## Evaluation audit utilities
+
+scripts/stage4_metrics.py provides an independent, standard-library-only audit of exact entity spans, character/type metrics, invalid-output availability, paired document bootstrap intervals, and summaries across the three configured seeds. It does not fetch data, call a service, or include datasets, predictions, checkpoints, or evaluation results.
+
+Run its synthetic-only checks with:
+
+    python3 -B -m unittest discover -s tests -p 'test_stage4_metrics_public.py' -v
