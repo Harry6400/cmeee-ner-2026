@@ -50,3 +50,15 @@ python3 -B -m unittest discover -s tests -p 'test_prepare_data.py' -v
 ## 数据与模型资源
 
 仓库不包含数据集压缩包、预训练模型、训练检查点或实验输出。请从权威来源获取各项资源，核对相应许可，并将资源保存在版本控制之外。项目级资源范围见 `THIRD_PARTY_NOTICES.md`。
+
+## 独立指标与补充核算
+
+`scripts/stage4_metrics.py` 使用 Python 标准库重算实体与字符指标、配对统计和多种子汇总；`tests/test_stage4_metrics_public.py` 只使用合成样例。`scripts/verify_supplement.py` 与 `scripts/verify_supplement_gpu.py` 也只依赖 Python 标准库，用于核对已有开发记录，不会启动训练、GPU 或 API。
+
+合成检查命令：
+
+```sh
+python3 -B -m unittest discover -s tests -p 'test_stage4_metrics_public.py' -v
+```
+
+两个核算脚本需要项目已有的数据、预测和运行记录；本补丁包不含这些材料。配置文件仅用于描述既有开发实验，不构成训练或资源授权。

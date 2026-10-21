@@ -1,0 +1,14 @@
+{
+ "stage":3,"seed":20261019,"window_chars":256,"overlap_chars":160,
+ "micro_batch":4,"accumulation":8,"precision":"fp32","rope":true,
+ "head_size":64,"embedding_dim":128,"lstm_hidden":128,
+ "n0_lr":0.001,"n1_encoder_lr":0.00003,"n1_head_lr":0.001,
+ "bert_model":"google-bert/bert-base-chinese","bert_revision":"8f23c25b06e129b6c986331a13d8d025a92cf0ea",
+ "bert_directory":"models/bert-base-chinese","decode_threshold":0.0,"cpu_threads":4,"workers":0,
+ "gpu_uuid":"GPU-f77a1700-de70-05d2-048f-18c8f9aa5974",
+ "n0_max_epochs":20,"n1_max_epochs":10,"patience":3,
+ "learning_rates":[0.00001,0.00003,0.00005],"max_segment_seconds":84600,
+ "epoch_tail_policy":"pad shuffled training windows to multiple of32; record repeat count; dev never padded",
+ "selection":"highest internal dev strict F1; tie lower encoder lr; epoch tie earlier",
+ "api_enabled":false
+}

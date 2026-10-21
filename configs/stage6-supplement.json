@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "study": "template-supplement-20261020",
+  "created_at": "2026-10-20T12:12:21.771373+00:00",
+  "authorization": "explicit_user_implementation_2026-10-20",
+  "base_config": "configs/stage3.json",
+  "base_config_sha256": "fdba86316e031982c637a015f081038d7d4b93aa88222605e634fd12581360bf",
+  "training_jobs": [
+    {
+      "name": "N1-rope-off-lr-1e-05-seed20261019",
+      "seed": 20261019,
+      "encoder_lr": 1e-05
+    },
+    {
+      "name": "N1-rope-off-lr-3e-05-seed20261019",
+      "seed": 20261019,
+      "encoder_lr": 3e-05
+    },
+    {
+      "name": "N1-rope-off-lr-5e-05-seed20261020",
+      "seed": 20261020,
+      "encoder_lr": 5e-05
+    },
+    {
+      "name": "N1-rope-off-lr-5e-05-seed20261021",
+      "seed": 20261021,
+      "encoder_lr": 5e-05
+    }
+  ],
+  "run_root": "runs/stage6-supplement-20261020",
+  "evidence_root": "evidence/stage6-template-supplement",
+  "gpu_uuid": "GPU-f77a1700-de70-05d2-048f-18c8f9aa5974",
+  "seeds": [
+    20261019,
+    20261020,
+    20261021
+  ],
+  "learning_rates": [
+    1e-05,
+    3e-05,
+    5e-05
+  ],
+  "fixed_epoch": 3,
+  "fixed_updates": 1302,
+  "thresholds": [
+    -1.0,
+    -0.5,
+    0.0,
+    0.5,
+    1.0
+  ],
+  "cpu_threads": 4,
+  "latency_warmup_samples": 10,
+  "latency_repetitions": 3,
+  "train_samples": 13497,
+  "dev_samples": 1503,
+  "train_sha256": "5210ef07e22fa80d2ff1226bf7c8e8e8f4be8290c6d3d97b809528214bc8faa0",
+  "dev_sha256": "9721b812f698a333b33e55541dfc3f29df5dd0df1dbbb20acdf92871e2f46155",
+  "max_segment_seconds": 84600,
+  "fp32": true,
+  "api_enabled": false,
+  "sealed_read": false,
+  "analysis_scope": "retrospective development supplement after frozen final results;no final test tuning or default model replacement",
+  "reuse_runs": [
+    "runs/stage3-20261019/N1-lr-1e-05",
+    "runs/stage3-20261019/N1-lr-3e-05",
+    "runs/stage3-20261019/N1-lr-5e-05",
+    "runs/stage3-20261019/N1-rope-off",
+    "runs/stage4-20261020/N1-seed20261020",
+    "runs/stage4-20261020/N1-seed20261021"
+  ]
+}
