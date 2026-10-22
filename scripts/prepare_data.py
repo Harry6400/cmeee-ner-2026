@@ -237,7 +237,7 @@ def prepare(archive: Path, output: Path, seed=20261019, evaluation_size=500) -> 
              'annotation_warnings': len(warnings),
              'near_overlap_pairs': {name: len(value['pairs']) for name, value in overlaps.items()}}
     write_json(output / 'manifests/statistics.json', stats)
-    files = {str(p.relative_to(output)): digest(p.read_bytes())
+    files = {p.relative_to(output).as_posix(): digest(p.read_bytes())
              for p in sorted(output.rglob('*')) if p.is_file() and 'raw' not in p.relative_to(output).parts}
     readiness = {'schema_version': 1, 'created_at': datetime.now(timezone.utc).isoformat(),
                  'seed': seed, 'evaluation_sampling_seed': seed + 1, 'evaluation_size': evaluation_size,
@@ -257,7 +257,7 @@ def prepare(archive: Path, output: Path, seed=20261019, evaluation_size=500) -> 
 
 
 def verify(output: Path) -> dict:
-    manifest = json.loads((output / 'manifests/readiness.json').read_text())
+    manifest = json.loads((output / 'manifests/readiness.json').read_text(encoding='utf-8'))
     archive = output / manifest['source_archive_path']
     if not archive.is_file() or digest(archive.read_bytes()) != manifest['archive_sha256']:
         raise ValueError('原始官方ZIP缺失或不一致')

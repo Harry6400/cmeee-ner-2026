@@ -1,0 +1,77 @@
+{
+  "seed": 20261019,
+  "archive_sha256": "bbd6beb390ddd2ac79f3ca7ec15aa5ba8564ed90bff1da269c71d38ec67c600b",
+  "data_sha256": {
+    "processed/train.jsonl": "5210ef07e22fa80d2ff1226bf7c8e8e8f4be8290c6d3d97b809528214bc8faa0",
+    "processed/dev.jsonl": "9721b812f698a333b33e55541dfc3f29df5dd0df1dbbb20acdf92871e2f46155",
+    "sealed/common500.jsonl": "a293029fe31fcc04edc6b2aed8faefe399b87a9b0114a449e39008d08e013f47",
+    "sealed/holdout.jsonl": "a2ae73ae607f2e3b401a63feb74b1912d1e1f1b9e47cd55f64e682e2b7a66b2f"
+  },
+  "metrics": {
+    "common500": {
+      "N0": {
+        "tp": 1332,
+        "predicted": 2000,
+        "gold": 2493,
+        "precision": 0.666,
+        "recall": 0.5342960288808665,
+        "f1": 0.5929223236145116
+      },
+      "N1": {
+        "tp": 1702,
+        "predicted": 2687,
+        "gold": 2493,
+        "precision": 0.6334201711946409,
+        "recall": 0.6827115924588849,
+        "f1": 0.6571428571428573
+      },
+      "D0": {
+        "tp": 1173,
+        "predicted": 3854,
+        "gold": 2493,
+        "precision": 0.3043591074208614,
+        "recall": 0.470517448856799,
+        "f1": 0.369623444146841
+      }
+    },
+    "holdout5000": {
+      "N0": {
+        "tp": 14203,
+        "predicted": 21043,
+        "gold": 26081,
+        "precision": 0.6749512902152734,
+        "recall": 0.5445726774280127,
+        "f1": 0.6027926322043969
+      },
+      "N1": {
+        "tp": 17839,
+        "predicted": 27254,
+        "gold": 26081,
+        "precision": 0.6545461216702135,
+        "recall": 0.6839845097964035,
+        "f1": 0.6689415955751383
+      },
+      "D0": {
+        "tp": 12384,
+        "predicted": 39065,
+        "gold": 26081,
+        "precision": 0.31701011135287344,
+        "recall": 0.4748284191557072,
+        "f1": 0.38019218371043506
+      }
+    }
+  },
+  "prediction_paths": {
+    "common500": {
+      "N0": "runs/stage4-20261020/local-evaluation/N0-seed20261019/common500/predictions.jsonl",
+      "N1": "runs/stage4-20261020/local-evaluation/N1-seed20261019/common500/predictions.jsonl",
+      "D0": "runs/stage4-20261020/local-evaluation/D0/common500/predictions.jsonl"
+    },
+    "holdout5000": {
+      "N0": "runs/stage4-20261020/local-evaluation/N0-seed20261019/holdout5000/predictions.jsonl",
+      "N1": "runs/stage4-20261020/local-evaluation/N1-seed20261019/holdout5000/predictions.jsonl",
+      "D0": "runs/stage4-20261020/local-evaluation/D0/holdout5000/predictions.jsonl"
+    }
+  },
+  "origin": "immutable stage4 primary seed;only compare,never replace main outputs"
+}
