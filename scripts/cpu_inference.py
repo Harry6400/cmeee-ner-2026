@@ -9,8 +9,8 @@ from ner_model import Extractor,configure,collate,decode
 class CPUModels:
     def __init__(self, root=ROOT, config_path=None):
         self.root=Path(root);self.config_path=Path(config_path) if config_path else self.root/'configs/review-runtime.json'
-        self.runtime=json.loads(self.config_path.read_text());self.models={};self.loads={}
-        self.manifest=json.loads((self.root/self.runtime['model_manifest']).read_text())
+        self.runtime=json.loads(self.config_path.read_text(encoding='utf-8'));self.models={};self.loads={}
+        self.manifest=json.loads((self.root/self.runtime['model_manifest']).read_text(encoding='utf-8'))
         configure(self.runtime['selected_model_seed'],self.runtime['cpu_threads'])
     def load(self,method):
         if method in self.models:return self.models[method]
@@ -40,4 +40,4 @@ class CPUModels:
         timing=dict(device='cpu',precision='fp32',method=method,seed=cfg['seed'],samples=len(inputs),windows=len(ws),load_seconds=self.loads[method],inference_seconds=time.perf_counter()-start,model_sha256=next(x['sha256'] for x in self.manifest['items'] if x['method']==method),new_API_calls=0)
         return outputs,timing
 
-def read_jsonl(path):return [json.loads(l) for l in Path(path).read_text().splitlines() if l]
+def read_jsonl(path):return [json.loads(l) for l in Path(path).read_text(encoding='utf-8').splitlines() if l]

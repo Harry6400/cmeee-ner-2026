@@ -8,7 +8,7 @@ from entity_wire import occurrences, from_wire
 
 def load_policy(path=None):
     path = Path(path) if path else ROOT/'configs/review-runtime.json'
-    data = json.loads(path.read_text())
+    data = json.loads(path.read_text(encoding='utf-8'))
     policy = dict(data.get('repair_policy', data.get('policy', {})))
     required = {'min_term_count','min_term_length','min_type_purity','context_chars','min_context_similarity','min_context_margin','min_context_type_examples','api_repair'}
     if set(policy) != required: raise ValueError('repair policy keys differ from supported configuration')
@@ -103,4 +103,4 @@ def repair_wire(row, parsed):
     if issues: return dict(status='invalid',prediction=None,actions=actions,issues=issues)
     return dict(status='repaired' if actions else 'valid_unchanged',prediction=from_wire(row,dict(entities=valid)),actions=actions,issues=[])
 
-def rows(path): return [json.loads(line) for line in Path(path).read_text().splitlines() if line]
+def rows(path): return [json.loads(line) for line in Path(path).read_text(encoding='utf-8').splitlines() if line]
