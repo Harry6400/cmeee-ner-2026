@@ -269,7 +269,7 @@ class TeacherProject:
         try: budget=self.api().budget()
         except (OSError,ValueError):
             from teacher_api import BASELINE,DEMO_CAP,TOTAL_CAP,CONFIRMED_PLATFORM_SPENT,PRIOR_UNRESOLVED_RESERVE,money
-            budget=dict(baseline_cny=money(BASELINE),demo_cap_cny=money(DEMO_CAP),total_cap_cny=money(TOTAL_CAP),remaining_cny='0.000000',calls=None,confirmed_platform_spent_cny=money(CONFIRMED_PLATFORM_SPENT),prior_unresolved_reserved_cny=money(PRIOR_UNRESOLVED_RESERVE),reservations_are_not_actual_spending=True,is_invoice=False,error='预算侧账不可读；停止API调用，请人工核查。')
+            budget=dict(baseline_cny=money(BASELINE),demo_cap_cny=money(DEMO_CAP),total_cap_cny=money(TOTAL_CAP),remaining_cny='0.000000',calls=None,confirmed_platform_spent_cny=money(CONFIRMED_PLATFORM_SPENT),prior_unresolved_reserved_cny=money(PRIOR_UNRESOLVED_RESERVE),reservations_are_not_actual_spending=True,is_invoice=False,error='历史费用侧账不可读；新调用使用独立用量记录。')
         result.update(assets=self.assets(),budget=budget)
         result['artifacts']=[dict(id=i,label=label,available=p is not None,url='/artifacts/'+i if p else None,status='本地候选' if p else '未生成或未放入本目录',file_name=p.name if p else None,file_size=p.stat().st_size if p else None,modified_at=datetime.fromtimestamp(p.stat().st_mtime,timezone.utc).isoformat() if p else None) for i,(label,p) in self.artifact_paths().items()]
         previous=[dict(r,kind='historical') for r in result.get('previous_reproductions',[]) if isinstance(r,dict)]
