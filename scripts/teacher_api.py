@@ -155,7 +155,7 @@ signature baseline_cny status config endpoint reservation_cny budget external_re
 input_price_cny output_price_cny context_max_tokens price_source price_checked_at max_output_tokens
 temperature stream api_key_present pricing_unit reservation_basis thinking disabled pricing_mode reference_only reasoning_effort low pending completed estimated
 request_id text method prediction raw_output raw_response error usage seconds started_at finished_at
-http_status source new_api_calls cost state estimated_cny reserved_cny is_invoice basis deduplicated
+http_status source request_sent error_code stage new_api_calls cost state estimated_cny reserved_cny is_invoice basis deduplicated
 prompt_tokens completion_tokens total_tokens start end type entities
 dis sym dru equ pro bod ite mic dep valid invalid http_error transport_failure
 reserved unknown settled teacher_live_api L0 L3 deepseek custom deepseek-flash deepseek-v4-pro
@@ -623,6 +623,14 @@ class TeacherAPI:
                     if not number.is_finite() or number < 0: raise ValueError()
                 except (InvalidOperation, ValueError):
                     raise ValueError("API用量记录损坏，停止调用以防重复发送") from None
+            if (("request_sent" in row and row["request_sent"] is not None and type(row["request_sent"]) is not bool)
+                    or ("new_api_calls" in row and (type(row["new_api_calls"]) is not int or row["new_api_calls"] not in (0, 1)))
+                    or ("request_sent" in row and "new_api_calls" in row
+                        and row["new_api_calls"] != (0 if row["request_sent"] is False else 1))
+                    or (row.get("http_status") is not None and
+                        (type(row["http_status"]) is not int or not 100 <= row["http_status"] <= 599))
+                    or (row.get("error_code") is not None and row["error_code"] not in _DIAGNOSTICS)):
+                raise ValueError("API用量记录损坏，停止调用以防重复发送")
             ids.add(row["request_id"])
         return value
 
@@ -633,6 +641,38 @@ class TeacherAPI:
             return self._validate_usage(json.loads(self.usage_path.read_text(encoding="utf-8")))
         except (ValueError, KeyError, TypeError):
             raise ValueError("API用量记录损坏，停止调用以防重复发送") from None
+
+    def usage_summary(self):
+        """Read unique generation attempts; uncertain sends count once, never as zero."""
+        ledger = self._usage_ledger()
+        calls = unknown = pending = 0
+        for row in ledger["requests"]:
+            pending += row["state"] == "pending"
+            if "request_sent" in row:
+                sent = row["request_sent"]
+            else:
+                # Older v1 rows remain byte-for-byte unchanged. Their saved result
+                # can distinguish an adapter/DNS rejection from a possible send.
+                result = {}
+                try:
+                    value = json.loads((self.directory / "requests" / row["request_id"] / "result.json").read_text(encoding="utf-8"))
+                    if isinstance(value, dict) and value.get("request_id") == row["request_id"]:
+                        result = value
+                except (OSError, ValueError):
+                    pass
+                if "request_sent" in result and (result["request_sent"] is None or type(result["request_sent"]) is bool):
+                    sent = result["request_sent"]
+                elif type(result.get("new_api_calls")) is int and result["new_api_calls"] == 0:
+                    sent = False
+                elif result.get("status", row.get("outcome")) in ("valid", "invalid", "http_error"):
+                    sent = True
+                else:
+                    sent = None
+            calls += sent is not False
+            unknown += sent is None
+        return dict(requests=len(ledger["requests"]), calls=calls, unknown_calls=unknown,
+                    pending=pending, source="output/teacher-api/usage.json",
+                    count_basis="unique generation attempts; uncertain sends included; not billing")
 
     def _persist_usage(self, ledger, key):
         redacted = _redact(ledger, key)
@@ -986,7 +1026,7 @@ class TeacherAPI:
                 body["thinking"] = dict(type=config["thinking"])
             start, clock = now(), time.monotonic()
             entry = dict(request_id=ident, signature=signature, started_at=start, state="pending",
-                         estimated_cny=None, config=config)
+                         estimated_cny=None, config=config, request_sent=None, new_api_calls=1)
             ledger["requests"].append(entry)
             self._persist_usage(ledger, key)
             _write(directory / "execution-parameters.json", self.execution)
@@ -1027,15 +1067,6 @@ class TeacherAPI:
             entry.update(state="completed", estimated_cny=charge, usage=usage)
             end, seconds = now(), time.monotonic() - clock
             entry.update(finished_at=end, seconds=seconds, outcome=status)
-            try:
-                self._persist_usage(ledger, key)
-            except (ValueError, OSError):
-                # Keep the pending identity if persistence fails; never resend this ID.
-                _write(directory / "response-persistence-failure.json", _redact(dict(
-                    status="response_received_but_usage_not_committed", raw_response=raw,
-                    http_status=http_status, provider_status=status, error=error,
-                    finished_at=end, seconds=seconds, request_identity_retained=True), key))
-                raise
             content = None
             if isinstance(response, dict) and isinstance(response.get("choices"), list) and response["choices"]:
                 choice = response["choices"][0]
@@ -1045,7 +1076,8 @@ class TeacherAPI:
                           raw_output=content if isinstance(content, str) else raw, raw_response=raw,
                           error=error, usage=usage, seconds=seconds, started_at=start, finished_at=end,
                           provider=config["provider"], model=config["model"], endpoint=config["endpoint"],
-                          http_status=http_status, source="teacher_live_api", new_api_calls=1,
+                          http_status=http_status, request_sent=True if http_status is not None else None,
+                          source="teacher_live_api", new_api_calls=1,
                           cost=dict(state="estimated" if charge is not None else "unknown", estimated_cny=charge,
                                     is_invoice=False, price_source=config["price_source"],
                                     basis="reference token estimate, not invoice" if charge is not None else "price or usage unavailable"))
@@ -1063,6 +1095,18 @@ class TeacherAPI:
                 result.update(diagnostic)
             if result.get("request_sent") is False:
                 result["new_api_calls"] = 0
+            entry.update(request_sent=result["request_sent"], new_api_calls=result["new_api_calls"],
+                         http_status=http_status, error_code=result.get("error_code"))
+            try:
+                self._persist_usage(ledger, key)
+            except (ValueError, OSError):
+                # Keep the pending identity if persistence fails; never resend this ID.
+                _write(directory / "response-persistence-failure.json", _redact(dict(
+                    status="response_received_but_usage_not_committed", raw_response=raw,
+                    http_status=http_status, provider_status=status, error=error,
+                    request_sent=result["request_sent"], new_api_calls=result["new_api_calls"],
+                    finished_at=end, seconds=seconds, request_identity_retained=True), key))
+                raise
             result = _redact(result, key)
             _write(directory / "result.json", result)
             return result

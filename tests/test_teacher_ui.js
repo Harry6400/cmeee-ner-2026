@@ -13,6 +13,7 @@ async function main(){
     constructor(tag='div'){this.tagName=tag;this.children=[];this.attrs={};this.listeners={};this.classList=new Classes();this.dataset={};this.value='';this.disabled=false;this.hidden=false;this.checked=false;this.open=false;this._text='';this.style={};}
     set textContent(v){this._text=String(v??'');this.children=[];}get textContent(){return this._text+this.children.map(x=>x.textContent??String(x)).join('');}
     set className(v){this._class=String(v);this.classList=new Classes();this.classList.add(...String(v).split(' '));}get className(){return this._class||'';}
+    get firstElementChild(){return this.children[0];}
     append(...nodes){this.children.push(...nodes);}replaceChildren(...nodes){this._text='';this.children=[...nodes];}
     setAttribute(k,v){this.attrs[k]=String(v);}getAttribute(k){return this.attrs[k]??null;}removeAttribute(k){delete this.attrs[k];}
     addEventListener(k,f){(this.listeners[k]??=[]).push(f);}dispatch(k){for(const f of this.listeners[k]||[])f({target:this});}
@@ -27,8 +28,9 @@ async function main(){
   $('api-key').type='password';
   const nav=['live','compare','errors','experiments','delivery'].map(view=>{const e=new Element('button');e.dataset.view=view;return e;});
   const checks=['D0','N0','N1','L0','L3'].map(method=>{const e=new Element('input');e.value=method;e.checked=method==='L0';return e;});
+  const exports=[];
   const calls=[],stored=new Map([['teacher-api-preferences-v1',JSON.stringify({provider:'openrouter',model:'openai/gpt-4o-mini',input_price_cny:'legacy-price'})]]),localStorage={getItem:key=>stored.get(key)||null,setItem:(key,value)=>stored.set(key,String(value)),removeItem:key=>stored.delete(key)};
-  const context={document:{getElementById:$,createElement:tag=>new Element(tag),createTextNode:text=>{const e=new Element('#text');e.textContent=text;return e;},createElementNS:(_ns,tag)=>new Element(tag),body:new Element('body'),addEventListener(){},querySelectorAll:selector=>selector==='.main-nav button'?nav:selector==='.compare-method'?checks:selector==='.compare-method:checked'?checks.filter(c=>c.checked):[]},Node:Element,Option:class extends Element{constructor(text,value){super('option');this.textContent=text;this.value=value;}},performance,crypto:globalThis.crypto,fetch:(url,options)=>new Promise(resolve=>calls.push({url,options,resolve})),setInterval:()=>1,clearInterval(){},setTimeout:()=>1,clearTimeout(){},console,Blob,URL,navigator:{clipboard:{writeText:async()=>{}}},localStorage,window:{addEventListener(){}},TeacherSelect:{refresh(){},close(){},focus(){}},globalThis:null};context.globalThis=context;
+  const context={document:{getElementById:$,createElement:tag=>new Element(tag),createTextNode:text=>{const e=new Element('#text');e.textContent=text;return e;},createElementNS:(_ns,tag)=>new Element(tag),body:new Element('body'),addEventListener(){},querySelectorAll:selector=>selector==='.main-nav button'?nav:selector==='.compare-method'?checks:selector==='.compare-method:checked'?checks.filter(c=>c.checked):[]},Node:Element,Option:class extends Element{constructor(text,value){super('option');this.textContent=text;this.value=value;}},performance,crypto:globalThis.crypto,fetch:(url,options)=>new Promise(resolve=>calls.push({url,options,resolve})),setInterval:()=>1,clearInterval(){},setTimeout:()=>1,clearTimeout(){},console,Blob,URL:class extends URL{static createObjectURL(blob){exports.push(blob);return URL.createObjectURL(blob);}},navigator:{clipboard:{writeText:async()=>{}}},localStorage,window:{addEventListener(){}},TeacherSelect:{refresh(){},close(){},focus(){}},globalThis:null};context.globalThis=context;
   vm.runInNewContext(source,context,{filename:'ui/teacher.js'});
   function pending(url){const call=[...calls].reverse().find(c=>c.url===url&&!c.responded);assert.ok(call,`Missing expected mocked request ${url}`);return call;}
   function respond(call,data){call.responded=true;call.resolve({ok:true,status:200,json:async()=>data});}
@@ -135,7 +137,7 @@ async function main(){
   // Applying configuration is local; known prices come from the directory, not browser-entered rates.
   $('api-key').value='not-a-real-secret';const stable=$('api-form').onsubmit({preventDefault(){}}),stableCall=pending('/api/api-check');
   const stableConfig=JSON.parse(stableCall.options.body).config;
-  assert.equal(stableConfig.model,'deepseek-flash');assert.equal(stableConfig.json_mode,true);assert.equal(Object.hasOwn(stableConfig,'input_price_cny'),false);assert.equal(Object.hasOwn(stableConfig,'output_price_cny'),false);
+  assert.equal(stableConfig.model,'deepseek-flash');assert.equal(Object.hasOwn(stableConfig,'json_mode'),false);assert.equal(Object.hasOwn(stableConfig,'input_price_cny'),false);assert.equal(Object.hasOwn(stableConfig,'output_price_cny'),false);
   respond(stableCall,{status:'checked_locally',endpoint:'https://api.deepseek.com/chat/completions',reservation_cny:'2.129920'});await stable;
   assert.equal($('api-config-dot').classList.contains('ready'),true);
   assert.ok(calls.every(call=>call.url.startsWith('/api/')));
@@ -158,7 +160,7 @@ async function main(){
   $('api-model-manual').value='course-model';$('api-model-manual').dispatch('input');
   const generationsBeforeListing=calls.filter(call=>call.url==='/api/extract-api').length;
   const manual=$('api-form').onsubmit({preventDefault(){}}),manualCall=pending('/api/api-check'),manualConfig=JSON.parse(manualCall.options.body).config;
-  assert.equal(manualConfig.model,'course-model');assert.equal(Object.hasOwn(manualConfig,'input_price_cny'),false);
+  assert.equal(manualConfig.model,'course-model');assert.equal(Object.hasOwn(manualConfig,'json_mode'),false);assert.equal(Object.hasOwn(manualConfig,'input_price_cny'),false);
   respond(manualCall,{status:'checked_locally',endpoint:'https://example.org/v1/chat/completions'});await manual;
   assert.equal($('api-dialog').open,false);assert.equal($('api-config-dot').classList.contains('ready'),true);
   const unsupportedCustom=$('api-test').onclick();respond(pending('/api/api-models'),{status:'models_unsupported',selected_model_found:null,models:[],generation_requests:0});await unsupportedCustom;
@@ -189,6 +191,87 @@ async function main(){
   assert.equal($('api-config-dot').classList.contains('ready'),false);assert.match($('api-form-error').textContent,/结果已丢弃/);
   assert.ok(calls.filter(call=>call.url==='/api/extract-api').every(call=>JSON.parse(call.options.body).config.api_key==='not-a-real-secret'));
   checksResult.push('Explicit model refresh checks availability without extraction and discards stale directory results');
+
+  // Each comparison is a single configuration snapshot; no key is exported.
+  async function saveComparisonConfig(provider='deepseek'){
+    $('api-provider').value=provider;$('api-provider').dispatch('change');
+    if(provider==='custom'){$('api-base').value='https://example.org/v1';$('api-base').dispatch('input');$('api-model-manual').value='course-model';$('api-model-manual').dispatch('input');}
+    $('api-key').value='comparison-memory-only-key';$('api-key').dispatch('input');
+    const saving=$('api-form').onsubmit({preventDefault(){}});respond(pending('/api/api-check'),{status:'checked_locally'});await saving;
+  }
+  function selectRoutes(routes){checks.forEach(check=>{check.checked=routes.includes(check.value);});checks[0].onchange();}
+  function countApi(){return calls.filter(call=>call.url==='/api/extract-api').length;}
+  function extraction(call,entities=[{start:1,end:3,type:'dis',text:'肝癌'},{start:1,end:2,type:'bod',text:'肝'},{start:3,end:5,type:'sym',text:'发热'}]){const body=JSON.parse(call.options.body);return {method:body.prompt_mode||body.method,model:body.config?.model,provider:body.config?.provider,status:'valid',prediction:entities,source:body.config?'teacher_live_api':'teacher_live_cpu',seconds:.1};}
+  async function comparisonExport(){const before=exports.length;$('compare-export').click();assert.equal(exports.length,before+1);return JSON.parse(await exports.at(-1).text());}
+  $('compare-text').value='😀肝癌发热';
+  await saveComparisonConfig();selectRoutes(['L0','L3']);
+  const stableComparison=$('compare-run').onclick(),stableFirst=pending('/api/extract-api'),startCount=countApi();
+  await $('compare-run').onclick();assert.equal(countApi(),startCount,'Duplicate comparison click must not send another request');
+  respond(stableFirst,extraction(stableFirst));await tick();const stableSecond=pending('/api/extract-api');
+  assert.equal(JSON.parse(stableFirst.options.body).config.model,JSON.parse(stableSecond.options.body).config.model);
+  respond(stableSecond,extraction(stableSecond));await stableComparison;
+  assert.equal(findClass($('compare-result'),'check-label').children[0].checked,false);
+  assert.ok(findClass($('compare-result'),'comparison-table'));assert.doesNotMatch($('compare-result').textContent,/待运行|未运行/);
+  assert.match($('compare-result').textContent,/结果一致/);assert.match($('compare-result').textContent,/deepseek-flash/);
+  const stableExport=await comparisonExport();assert.equal(stableExport.status,'completed');assert.deepEqual(stableExport.not_run_routes,[]);assert.equal(stableExport.interruption_reason,null);
+  assert.equal(stableExport.results[0].prediction[0].start,1);assert.equal(stableExport.results[0].prediction.length,3);assert.match($('compare-result').textContent,/肝/);for(const entity of stableExport.results[0].prediction)assert.equal(Array.from(stableExport.text).slice(entity.start,entity.end).join(''),entity.text);assert.doesNotMatch(JSON.stringify(stableExport),/comparison-memory-only-key|api_key/);
+  const onlyDiff=findClass($('compare-result'),'check-label').children[0];onlyDiff.checked=true;onlyDiff.onchange();
+  assert.match($('compare-result').textContent,/没有分歧/);assert.equal(findClass($('compare-result'),'empty-state'),undefined);onlyDiff.checked=false;onlyDiff.onchange();
+  checksResult.push('Complete comparison defaults to full matrix, retains Unicode spans, has compact no-difference state, exports no keys, and blocks duplicate sends');
+
+  const mutations=[
+    ['model',()=>{$('api-model').value='deepseek-v4-pro';$('api-model').dispatch('change');}],
+    ['provider',()=>{$('api-provider').value='openai';$('api-provider').dispatch('change');}],
+    ['key edit',()=>{$('api-key').value='edited-memory-key';$('api-key').dispatch('input');}],
+    ['key clear',()=>{$('api-clear-key').click();}]
+  ];
+  for(const [label,mutate] of mutations){
+    await saveComparisonConfig();selectRoutes(['L0','L3']);const before=countApi();
+    const running=$('compare-run').onclick(),first=pending('/api/extract-api');mutate();
+    assert.match($('compare-state').textContent,/配置已改变/);
+    if(label==='model'){const resave=$('api-form').onsubmit({preventDefault(){}});assert.equal(JSON.parse(pending('/api/api-check').options.body).config.model,'deepseek-v4-pro');respond(pending('/api/api-check'),{status:'checked_locally'});await resave;}
+    respond(first,extraction(first));await running;
+    assert.equal(countApi(),before+1,`${label}: L3 must remain unsent`);assert.match($('compare-result').textContent,/L3 · 未运行/);
+    const exported=await comparisonExport();assert.equal(exported.status,'interrupted');assert.deepEqual(exported.not_run_routes,['L3']);assert.equal(exported.interruption_reason,'api_config_changed');
+    assert.equal(exported.results.length,1);assert.equal(exported.results[0].model,'deepseek-flash');assert.equal($('compare-export').disabled,false);
+  }
+  await saveComparisonConfig('custom');selectRoutes(['L0','L3']);
+  const customBefore=countApi(),customRunning=$('compare-run').onclick(),customSent=pending('/api/extract-api');
+  $('api-base').value='https://other.example.org/v1';$('api-base').dispatch('input');respond(customSent,extraction(customSent));await customRunning;assert.equal(countApi(),customBefore+1);
+  await saveComparisonConfig('custom');selectRoutes(['L0','L3']);
+  const toggleBefore=countApi(),toggleRunning=$('compare-run').onclick(),toggleSent=pending('/api/extract-api');
+  $('api-model-manual-toggle').click();assert.equal($('api-config-dot').classList.contains('ready'),false);
+  respond(toggleSent,extraction(toggleSent));await toggleRunning;assert.equal(countApi(),toggleBefore+1);assert.deepEqual((await comparisonExport()).not_run_routes,['L3']);
+  checksResult.push('Model/provider/key edits, key clear, and custom URL edits interrupt comparison while retaining in-flight results and marking L3 not run');
+
+  // Configuration changes before L0 also stop the queued API routes, but not pure local comparisons.
+  await saveComparisonConfig();selectRoutes(['D0','L0','L3']);const beforeQueued=countApi();
+  const queued=$('compare-run').onclick(),dictionary=pending('/api/extract');$('api-clear-key').click();respond(dictionary,extraction(dictionary));await queued;
+  assert.equal(countApi(),beforeQueued);assert.deepEqual((await comparisonExport()).not_run_routes,['L0','L3']);
+  selectRoutes(['D0','N0']);const localComparison=$('compare-run').onclick(),localFirst=pending('/api/extract');
+  $('api-provider').value='openai';$('api-provider').dispatch('change');respond(localFirst,extraction(localFirst));await tick();
+  const localSecond=pending('/api/extract');respond(localSecond,extraction(localSecond,[]));await localComparison;
+  assert.equal((await comparisonExport()).status,'completed');assert.ok(findClass($('compare-result'),'matrix-difference'));
+  checksResult.push('Config changes before L0 leave all API routes unsent; local-only comparison continues and highlights differing entities');
+
+  // Transport failures remain failures, not empty predictions; later routes still use the snapshot.
+  for(const status of [401,429,504]){
+    await saveComparisonConfig();selectRoutes(['L0','L3']);const before=countApi(),running=$('compare-run').onclick(),first=pending('/api/extract-api');
+    first.responded=true;first.resolve({ok:false,status,json:async()=>({error:`受控 HTTP ${status} 失败`})});await tick();const second=pending('/api/extract-api');
+    respond(second,extraction(second));await running;const exported=await comparisonExport();assert.equal(countApi(),before+2);assert.equal(exported.results[0].status,'request_failed');assert.equal(exported.results[0].prediction,null);assert.match($('compare-result').textContent,/失败/);
+  }
+  for(const status of ['truncated','invalid_json','refused']){
+    await saveComparisonConfig();selectRoutes(['L0']);const running=$('compare-run').onclick(),first=pending('/api/extract-api');respond(first,{...extraction(first),status,prediction:null,raw_output:'受控无效输出'});await running;
+    assert.equal((await comparisonExport()).results[0].prediction,null);assert.match($('compare-result').textContent,/不能按空实体处理/);
+  }
+  checksResult.push('401/429/timeout and truncated/non-JSON/refusal responses preserve failure status without retries or false empty entities');
+
+  $('live-json').click();assert.equal($('live-json').getAttribute('aria-expanded'),'true');assert.equal($('live-json-details').hidden,false);assert.equal($('live-json').textContent,'收起 JSON');
+  $('live-json').click();assert.equal($('live-json').getAttribute('aria-expanded'),'false');assert.equal($('live-json-details').hidden,true);
+  assert.equal($('live-json-details').tagName,'div');
+  nav.find(button=>button.dataset.view==='experiments').onclick();
+  const sources=findClass($('experiments-content'),'source-notes');assert.equal(sources.tagName,'details');assert.equal(sources.open,false);
+  checksResult.push('Single accessible JSON toggle and initially collapsed experiment sources');
 
   console.log(JSON.stringify({status:'PASS',harness:'Offline Node DOM state harness; synthetic data and HTTP responses only',external_requests:0,checks:checksResult},null,2));
 }
