@@ -10,10 +10,10 @@
 <main id="main" tabindex="-1">
 <div id="global-error" role="alert" class="notice error" hidden></div>
 <section id="view-live" class="view" aria-labelledby="live-heading">
-  <div class="section-head"><h2 id="live-heading">实时抽取</h2><button class="text-button" id="live-help-toggle" aria-expanded="false" aria-controls="live-guide">输入与结果说明</button></div>
+  <h2 id="live-heading" class="sr-only">实时抽取</h2>
   <div id="live-guide" class="context-guide" hidden><p>默认使用正式 N1 权重在本机 CPU 抽取。D0 为训练实体词典匹配，N0 为字符 BiLSTM + GlobalPointer，N1 为中文 BERT + GlobalPointer；API 路线需自行配置密钥。</p><p>位置按 Unicode 字符计数，采用左闭右开区间 [start, end)。嵌套实体可共享原文；支持表示嵌套不等于模型一定预测正确。</p></div>
   <div class="workspace">
-    <section class="editor-pane"><div class="pane-head"><h3>输入原文</h3><span id="live-char-count" class="muted">0 / 4000 字符</span></div>
+    <section class="editor-pane"><div class="pane-head live-pane-head"><h3>输入原文</h3><div class="pane-tools"><span id="live-char-count" class="muted">0 / 4000 字符</span><button class="text-button" id="live-help-toggle" aria-expanded="false" aria-controls="live-guide">输入与结果说明</button></div></div>
       <div class="sample-row" id="live-samples" aria-label="选择示例"></div>
       <div class="run-controls"><div class="grow"><label class="sr-only" for="live-method">抽取方法</label><select id="live-method"><option value="N1">N1 · BERT 实体抽取</option><option value="N0">N0 · 字符模型</option><option value="D0">D0 · 词典匹配</option><option value="L0">API · 零样本</option><option value="L3">API · 三样本</option></select></div><button id="live-run" class="button primary">开始抽取 <span aria-hidden="true">↗</span></button></div>
       <label class="sr-only" for="live-text">待抽取文本</label><textarea id="live-text" class="text-editor" maxlength="8000" aria-describedby="live-text-help live-error" spellcheck="false">出现发热与咳嗽，使用布洛芬。</textarea>
@@ -25,21 +25,22 @@
   </div>
 </section>
 <section id="view-compare" class="view" aria-labelledby="compare-heading" hidden>
-  <div class="section-head"><h2 id="compare-heading">方法对比</h2></div>
+  <h2 id="compare-heading" class="sr-only">方法对比</h2>
   <div class="compare-editor"><label for="compare-text">待比较的文本</label><textarea id="compare-text" class="text-editor compact" maxlength="8000" aria-describedby="compare-help compare-error" spellcheck="false">出现发热与咳嗽，使用布洛芬。</textarea><div class="compare-options"><span class="muted" id="compare-count">0 / 4000 字符</span><fieldset class="inline-fieldset"><legend>运行路线</legend><label><input type="checkbox" value="D0" checked class="compare-method">D0 词典</label><label><input type="checkbox" value="N0" checked class="compare-method">N0 字符模型</label><label><input type="checkbox" value="N1" checked class="compare-method">N1 BERT</label><label><input type="checkbox" value="L0" class="compare-method">API 零样本</label><label><input type="checkbox" value="L3" class="compare-method">API 三样本</label></fieldset><button id="compare-run" class="button primary">运行所选方法</button></div><p id="compare-help" class="help">本地路线顺序运行；勾选 API 并点击运行才会外发文本。</p><div id="compare-error" class="field-error" role="alert"></div></div>
   <div class="pane-head spaced"><h3>精确跨度差异</h3><span id="compare-state" class="badge neutral">等待运行</span><button id="compare-export" class="button small" disabled>导出当前对比</button></div><div id="compare-progress" role="status" class="progress-state" hidden></div><div id="compare-result" aria-busy="false"><div class="empty-state compact-empty"><p>运行后查看共同项与分歧</p><span>没有参考标注，不计算准确率</span></div></div>
 </section>
 <section id="view-errors" class="view" aria-labelledby="errors-heading" hidden>
-  <div class="section-head"><h2 id="errors-heading">错误分析</h2></div>
+  <h2 id="errors-heading" class="sr-only">错误分析</h2>
   <div class="case-toolbar"><div class="grow"><label for="case-select">真实失败案例</label><select id="case-select"><option value="">正在加载案例…</option></select></div><div><label for="case-route">所选历史预测</label><select id="case-route"><option value="D0">D0 · 词典匹配</option><option value="N0">N0 · 字符模型</option><option value="N1" selected>N1 · BERT</option><option value="L0">API · 零样本</option><option value="L3">API · 三样本</option></select></div><button id="case-export" class="button" disabled>导出当前证据</button></div>
   <div id="case-status" class="case-source" role="status">正在读取冻结失败案例。</div><div id="case-error" role="alert" class="field-error"></div><div id="case-diff" class="case-diff"></div><div class="case-options"><label class="check-label"><input id="case-only-diff" type="checkbox" checked>仅看差异实体</label></div><div id="case-results" class="case-columns" aria-busy="false"></div><section id="case-analysis" class="analysis-area" hidden></section><details id="case-repair" class="repair-details" hidden><summary>独立修复及复测限制</summary><div id="case-repair-content"></div></details><details id="case-json-details" hidden><summary>当前所选路线与来源 JSON</summary><pre id="case-json" class="json-box"></pre></details>
 </section>
-<section id="view-experiments" class="view" aria-labelledby="experiments-heading" hidden><div class="section-head"><h2 id="experiments-heading">实验结果</h2></div><div id="experiments-content"><p class="muted">正在读取实验汇总…</p></div></section>
+<section id="view-experiments" class="view" aria-labelledby="experiments-heading" hidden><h2 id="experiments-heading" class="sr-only">实验结果</h2><div id="experiments-content"><p class="muted">正在读取实验汇总…</p></div></section>
 <section id="view-delivery" class="view" aria-labelledby="delivery-heading" hidden>
-  <div class="section-head"><h2 id="delivery-heading">复现验证</h2></div>
-  <details class="acceptance-guide"><summary>老师验收路径</summary><ol class="acceptance-list"><li>输入新文本运行 N1，点击实体定位，导出 JSON 并读回。</li><li>使用同一原文比较 D0 / N0 / N1，查看差异。</li><li>核查 F01、F03、F04 的失败、依据和修复限制。</li><li>核对实验口径，准备资产后按需启动完整5000条CPU复现。</li></ol></details>
+  <h2 id="delivery-heading" class="sr-only">复现验证</h2>
+  <section class="acceptance-guide" aria-labelledby="acceptance-title"><div class="acceptance-head"><div><span class="eyebrow">建议验收顺序</span><h3 id="acceptance-title">老师验收路径</h3></div><span class="badge neutral">4 步</span></div><ol class="acceptance-list"><li>输入新文本运行 N1，点击实体定位，导出 JSON 并读回。</li><li>使用同一原文比较 D0 / N0 / N1，查看差异。</li><li>核查 F01、F03、F04 的失败、依据和修复限制。</li><li>核对实验口径，准备资产后按需启动完整5000条CPU复现。</li></ol></section>
   <section class="delivery-section"><div class="pane-head"><h3>运行资产</h3><button id="refresh-project" class="button small">刷新检查</button></div><div id="asset-list" class="asset-list"></div></section>
-  <section class="delivery-section"><div class="pane-head"><h3>完整 5000 条 CPU 复现</h3><span class="badge neutral">D0 → N0 → N1</span></div><div class="inline-actions"><button id="repro-start" class="button primary">开始完整复现</button><button id="repro-cancel" class="button danger" hidden>取消本次任务</button><span id="repro-availability" class="help"></span></div><div id="repro-empty" class="repro-empty"><strong>本会话尚未启动新复现</strong><p>将新生成预测并核对冻结指标，历史通过记录另列。</p></div><div id="repro-error" class="field-error" role="alert"></div><div id="repro-job" class="repro-job" hidden><div class="pane-head"><strong id="repro-stage">等待启动</strong><span id="repro-time" class="mono"></span></div><progress id="repro-progress" max="100" value="0" aria-label="完整复现进度"></progress><p id="repro-output" class="help"></p><div id="repro-summary"></div><details><summary>本次运行日志</summary><pre id="repro-log" class="json-box log-box" aria-label="本次复现日志"></pre></details></div><details class="history-details"><summary>历史复现记录 · 不代表本次通过</summary><div id="repro-history"></div></details><details><summary>命令行复现</summary><pre class="command"><code>uv run --locked python scripts/teacher_reproduce.py --archive assets/CMeEE-V2.zip --output output/teacher-001</code></pre></details></section>
+  <section class="delivery-section"><div class="pane-head"><h3>完整 5000 条 CPU 复现</h3><span class="badge neutral">D0 → N0 → N1</span></div><div class="repro-action-row"><div class="inline-actions"><button id="repro-start" class="button primary">开始完整复现</button><button id="repro-cancel" class="button danger" hidden>取消本次任务</button><span id="repro-availability" class="help"></span></div><button id="repro-history-open" class="button" type="button" aria-haspopup="dialog" aria-controls="repro-history-dialog">历史复现记录 <span id="repro-history-count" class="badge neutral" aria-hidden="true">0</span></button></div><div id="repro-empty" class="repro-empty"><strong>本会话尚未启动新复现</strong><p>将新生成预测并核对冻结指标，历史通过记录另列。</p></div><div id="repro-error" class="field-error" role="alert"></div><div id="repro-job" class="repro-job" hidden><div class="pane-head"><strong id="repro-stage">等待启动</strong><span id="repro-time" class="mono"></span></div><progress id="repro-progress" max="100" value="0" aria-label="完整复现进度"></progress><ol id="repro-steps" class="repro-steps" aria-label="完整复现步骤"></ol><p id="repro-output" class="help"></p><div id="repro-summary"></div><details><summary>本次运行日志</summary><pre id="repro-log" class="json-box log-box" aria-label="本次复现日志"></pre></details></div><section class="command-reference" aria-labelledby="command-title"><div class="command-head"><h4 id="command-title">命令行复现</h4><span class="badge neutral">CPU · 本地</span></div><pre class="command"><code>uv run --locked python scripts/teacher_reproduce.py --archive assets/CMeEE-V2.zip --output output/teacher-001</code></pre></section></section>
+  <dialog id="repro-history-dialog" aria-labelledby="repro-history-title"><div class="dialog-head"><h2 id="repro-history-title">历史复现记录</h2><button id="close-repro-history" class="button small" type="button">关闭</button></div><div id="repro-history" class="dialog-body"></div></dialog>
 
 </section>
 </main>
@@ -47,30 +48,21 @@
 <dialog id="api-dialog" aria-labelledby="api-dialog-title"><form id="api-form" novalidate>
   <div class="dialog-head"><h2 id="api-dialog-title">API 设置</h2><button type="button" id="close-api" class="button small" aria-label="关闭 API 设置">关闭</button></div>
   <div class="dialog-body">
-    <input type="hidden" id="api-provider" value="deepseek">
-    <div class="api-services" role="group" aria-label="API 服务">
-      <button type="button" data-provider="deepseek" aria-pressed="true"><span>DeepSeek 官方</span><small>默认服务</small></button>
-      <button type="button" data-provider="custom" aria-pressed="false"><span>OpenAI 兼容</span><small>Chat Completions</small></button>
+    <div class="api-provider-picker">
+      <label for="api-provider">服务商</label>
+      <select id="api-provider" aria-describedby="api-form-error"></select>
     </div>
     <div class="api-basic">
-      <div class="api-field"><label for="api-key">API 密钥</label><input id="api-key" type="password" autocomplete="off" spellcheck="false" required aria-describedby="api-key-help api-form-error"><p class="help" id="api-key-help">仅保存在本页内存，刷新后清除。</p></div>
-      <div id="api-official-model-wrap" class="api-field"><label for="api-model">模型</label><select id="api-model" aria-describedby="api-presets-note api-form-error"><option value="deepseek-flash">DeepSeek Flash</option><option value="deepseek-v4-pro">DeepSeek Pro</option></select><p class="help" id="api-presets-note" hidden></p></div>
-      <div class="api-field" id="api-base-wrap" hidden><label for="api-base">API 地址</label><input id="api-base" type="url" value="https://api.deepseek.com" autocomplete="off" required aria-describedby="api-endpoint api-form-error" placeholder="https://example.com/v1"></div>
-      <div class="api-field" id="api-custom-model-wrap" hidden><label for="api-custom-model">模型 ID</label><input id="api-custom-model" autocomplete="off" disabled aria-describedby="api-model-help api-form-error" placeholder="填写服务商提供的完整模型 ID"><p class="help" id="api-model-help">按服务商的模型 ID 原样填写。</p></div>
+      <div class="api-field api-model-field"><label for="api-model">模型</label><div class="api-model-row"><div id="api-model-select-wrap"><select id="api-model" required aria-describedby="api-form-error"><option value="">正在加载模型…</option></select></div><button type="button" id="api-test" class="button small">刷新模型</button></div><button type="button" id="api-model-manual-toggle" class="text-button api-manual-toggle" aria-pressed="false" hidden>手动输入模型 ID</button><div id="api-model-manual-wrap" class="api-model-manual-wrap" hidden><input id="api-model-manual" autocomplete="off" spellcheck="false" aria-label="手动输入模型 ID" aria-describedby="api-form-error" placeholder="填写服务商提供的模型 ID"></div></div>
+      <div class="api-field" id="api-base-wrap" hidden><label for="api-base">Base URL</label><input id="api-base" type="url" autocomplete="off" required aria-describedby="api-endpoint api-form-error" placeholder="https://example.com/v1"></div>
+      <div class="api-field"><label for="api-key">API 密钥</label><div class="api-key-row"><input id="api-key" type="password" autocomplete="off" spellcheck="false" required aria-describedby="api-key-help api-form-error"><button type="button" id="api-key-toggle" class="api-key-toggle" aria-label="显示 API 密钥" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.3-6 9.5-6 9.5 6 9.5 6-3.3 6-9.5 6-9.5-6-9.5-6Z"></path><circle cx="12" cy="12" r="2.5"></circle><path class="eye-slash" d="M4 20 20 4"></path></svg></button></div><p class="help" id="api-key-help">密钥仅存于本页内存，刷新或切换提供商后清除。</p></div>
     </div>
-    <p class="api-destination" id="api-endpoint">官方地址：https://api.deepseek.com</p>
-    <details id="api-advanced" class="api-advanced"><summary>高级设置</summary>
-      <label class="check-label api-json-field"><input id="api-json" type="checkbox" checked>使用 JSON 输出模式</label>
-      <fieldset id="api-custom-pricing" class="custom-service-fields" hidden disabled><legend>自定义服务参数</legend><div class="form-grid">
-        <div><label for="api-input-price">输入单价（元 / 百万 token）</label><input id="api-input-price" type="number" min="0" step="any" required disabled aria-describedby="api-form-error"></div>
-        <div><label for="api-output-price">输出单价（元 / 百万 token）</label><input id="api-output-price" type="number" min="0" step="any" required disabled aria-describedby="api-form-error"></div>
-        <div><label for="api-context">上下文上限（token）</label><input id="api-context" type="number" min="4096" max="10000000" step="1" required disabled aria-describedby="api-form-error"></div>
-        <div><label for="api-price-source">价格来源</label><input id="api-price-source" autocomplete="off" required disabled aria-describedby="api-form-error"></div>
-      </div></fieldset>
-    </details>
+    <p class="api-destination" id="api-endpoint">DeepSeek · 官方 HTTPS 接口</p>
+    <p id="api-price-summary" class="api-price-summary" hidden></p>
+    <p class="api-privacy-note">保存仅检查本地配置；刷新模型不发送原文。点击运行才会向所选服务发送待抽取文本。</p>
     <div id="api-validation" role="status" class="api-feedback" hidden></div><div id="api-form-error" role="alert" class="field-error"></div>
   </div>
-  <div class="dialog-foot"><button type="button" id="api-clear-key" class="text-button">清除密钥</button><div class="api-actions"><button type="button" id="api-test" class="button">检查连接</button><button type="submit" id="api-check" class="button primary">应用设置</button></div></div>
+  <div class="dialog-foot"><button type="button" id="api-clear-key" class="text-button">清除密钥</button><div class="api-actions"><button type="submit" id="api-check" class="button primary">保存并使用</button></div></div>
 </form></dialog>
 
 </body></html>
