@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-10-22T12:43:44.069681+00:00",
+  "purpose": "Non-commercial course reproduction by teacher and project team; CPU only by default",
+  "repository": "Harry6400/cmeee-ner-dev",
+  "runtime_source_commit": "b697c79284941983209822c233335a63ba9882f5",
+  "seed": 20261019,
+  "archive": {
+    "name": "教师复现资源.zip",
+    "bytes": 388076250,
+    "sha256": "cc7728f5094bdb169d00a370901917a6ca073519ab388335e8e8b2e10b75cfbc",
+    "layout": "Extract directly into a clean source root: assets/CMeEE-V2.zip and models/trained/",
+    "share_url": null,
+    "extraction_code": null,
+    "share_status": "pending_upload"
+  },
+  "files": {
+    "assets/CMeEE-V2.zip": "bbd6beb390ddd2ac79f3ca7ec15aa5ba8564ed90bff1da269c71d38ec67c600b",
+    "models/trained/N0-seed20261019.pt": "3f738c0769af233ad3bccaa572d4cad0089af26f81e3e01b940c0fded9f1af3b",
+    "models/trained/N1-seed20261019.pt": "4256f29e08c3142229c8d5f4026bfba01140af3531c1096daf668b23c1276c14",
+    "models/trained/manifest.json": "5b73fe580fbeae66b5dd89f2704d846c438eed9c950955171487f04c0925472c",
+    "models/trained/LICENSE.APACHE-2.0.txt": "77fd4710def9ec3c0f6225800e0235f15a425abd4a8b03559127fcd782612049",
+    "models/trained/MODEL_CARD_bert-base-chinese.md": "80efb5c88f6c09c0f4b2f91380852a374f023e195954f21ff7221928487ce454",
+    "models/trained/模型来源与许可.md": "d443170fb25f9a2aefb9a31d7136a32016558a6f90a8434b23b72d5854c74946"
+  },
+  "video": {
+    "name": "演示录屏.mp4",
+    "max_seconds": 120,
+    "status": "pending_user_recording",
+    "share_url": null
+  },
+  "data_provenance": "Official original acquired by Wu after approved application; user-authorized non-commercial course transfer to teacher and project team.",
+  "local_verification": {
+    "date": "2026-10-22",
+    "status": "PASS",
+    "platform": "macOS; Python 3.11.15",
+    "runtime_source_commit": "b697c79284941983209822c233335a63ba9882f5",
+    "fresh_environment_locked_install": true,
+    "samples_per_method": 5000,
+    "seconds": 120.56829954194836,
+    "strict_entity_micro_f1": {
+      "D0": 0.38019218371043506,
+      "N0": 0.6027926322043969,
+      "N1": 0.6689415955751383
+    },
+    "HTTP_page_and_fresh_N1": "PASS",
+    "F04_historical_evidence": "PASS",
+    "new_API_calls": 0,
+    "GPU_started": false,
+    "training": false,
+    "scope": "Local asset and CPU reproduction; share download, video and new Windows validation not performed"
+  }
+}
