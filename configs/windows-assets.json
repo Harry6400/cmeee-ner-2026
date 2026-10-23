@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "scope": "Windows CPU acceptance only; no API/GPU/training",
+  "files": {
+    "assets/CMeEE-V2.zip": "bbd6beb390ddd2ac79f3ca7ec15aa5ba8564ed90bff1da269c71d38ec67c600b",
+    "data/processed/train.jsonl": "5210ef07e22fa80d2ff1226bf7c8e8e8f4be8290c6d3d97b809528214bc8faa0",
+    "data/processed/dev.jsonl": "9721b812f698a333b33e55541dfc3f29df5dd0df1dbbb20acdf92871e2f46155",
+    "data/sealed/common500.jsonl": "a293029fe31fcc04edc6b2aed8faefe399b87a9b0114a449e39008d08e013f47",
+    "data/sealed/holdout.jsonl": "a2ae73ae607f2e3b401a63feb74b1912d1e1f1b9e47cd55f64e682e2b7a66b2f",
+    "models/trained/manifest.json": "5b73fe580fbeae66b5dd89f2704d846c438eed9c950955171487f04c0925472c",
+    "models/trained/N0-seed20261019.pt": "3f738c0769af233ad3bccaa572d4cad0089af26f81e3e01b940c0fded9f1af3b",
+    "models/trained/N1-seed20261019.pt": "4256f29e08c3142229c8d5f4026bfba01140af3531c1096daf668b23c1276c14"
+  },
+  "weights_archive": {
+    "name": "中文医学实体抽取_正式推理权重_seed20261019.zip",
+    "bytes": 384474835,
+    "sha256": "f30a707e4218f18aade7df2e29935a5ba13e8e11c2782fb8f62ccaa395547853",
+    "delivery": "Provided privately outside Git; no verified share link yet"
+  },
+  "required_display_files": [
+    "ui/project-data.json",
+    "ui/demo-cases.json",
+    "report-source/figures/rope-paired-effects.svg",
+    "report-source/figures/threshold-tradeoff.svg"
+  ],
+  "separate_delivery_items": [
+    "报告.pdf",
+    "项目摘要.md",
+    "两份贡献声明",
+    "视频及分享链接"
+  ],
+  "offline_assets_archive": {
+    "name": "Windows验收资产_数据与正式权重.zip",
+    "bytes": 388104108,
+    "sha256": "9b183ae8ae87c8e1dcc251c07ef7a8a9da5c19949a894c9d52202456013281fb",
+    "layout": "Extract directly into clean source root: assets/CMeEE-V2.zip and models/trained/",
+    "provenance": "Official archive originally acquired by Wu; user-authorized private same-team course acceptance transfer; retain source/license notices"
+  }
+}
