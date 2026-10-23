@@ -137,7 +137,7 @@ async function main(){
   // Applying configuration is local; known prices come from the directory, not browser-entered rates.
   $('api-key').value='not-a-real-secret';const stable=$('api-form').onsubmit({preventDefault(){}}),stableCall=pending('/api/api-check');
   const stableConfig=JSON.parse(stableCall.options.body).config;
-  assert.equal(stableConfig.model,'deepseek-flash');assert.equal(stableConfig.json_mode,true);assert.equal(Object.hasOwn(stableConfig,'input_price_cny'),false);assert.equal(Object.hasOwn(stableConfig,'output_price_cny'),false);
+  assert.equal(stableConfig.model,'deepseek-flash');assert.equal(Object.hasOwn(stableConfig,'json_mode'),false);assert.equal(Object.hasOwn(stableConfig,'input_price_cny'),false);assert.equal(Object.hasOwn(stableConfig,'output_price_cny'),false);
   respond(stableCall,{status:'checked_locally',endpoint:'https://api.deepseek.com/chat/completions',reservation_cny:'2.129920'});await stable;
   assert.equal($('api-config-dot').classList.contains('ready'),true);
   assert.ok(calls.every(call=>call.url.startsWith('/api/')));
@@ -160,7 +160,7 @@ async function main(){
   $('api-model-manual').value='course-model';$('api-model-manual').dispatch('input');
   const generationsBeforeListing=calls.filter(call=>call.url==='/api/extract-api').length;
   const manual=$('api-form').onsubmit({preventDefault(){}}),manualCall=pending('/api/api-check'),manualConfig=JSON.parse(manualCall.options.body).config;
-  assert.equal(manualConfig.model,'course-model');assert.equal(Object.hasOwn(manualConfig,'input_price_cny'),false);
+  assert.equal(manualConfig.model,'course-model');assert.equal(Object.hasOwn(manualConfig,'json_mode'),false);assert.equal(Object.hasOwn(manualConfig,'input_price_cny'),false);
   respond(manualCall,{status:'checked_locally',endpoint:'https://example.org/v1/chat/completions'});await manual;
   assert.equal($('api-dialog').open,false);assert.equal($('api-config-dot').classList.contains('ready'),true);
   const unsupportedCustom=$('api-test').onclick();respond(pending('/api/api-models'),{status:'models_unsupported',selected_model_found:null,models:[],generation_requests:0});await unsupportedCustom;

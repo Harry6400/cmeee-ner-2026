@@ -554,6 +554,90 @@ class TeacherAPITests(unittest.TestCase):
         self.assertEqual(len(self.api._usage_ledger()["requests"]),9)
         self.assertFalse(self.api.ledger_path.exists())
 
+    def test_full_historical_cap_does_not_gate_new_usage_or_change_ledger(self):
+        ledger = self.api._empty_ledger()
+        ledger["requests"].append(dict(request_id="old-full-cap", signature="a" * 64,
+                                       state="unknown", reserved_cny="15", charge_cny="0"))
+        self.api.directory.mkdir(parents=True)
+        original = json.dumps(ledger, indent=3).encode()
+        self.api.ledger_path.write_bytes(original)
+        self.assertEqual(self.api.budget()["remaining_cny"], "0.000000")
+        with patch.object(self.api, "budget", side_effect=AssertionError("no budget gate")):
+            result, send = self.call()
+        send.assert_called_once()
+        self.assertEqual(result["status"], "valid")
+        self.assertEqual(self.api.ledger_path.read_bytes(), original)
+
+    def test_usage_and_summary_share_sent_unknown_failure_and_dedup_counts(self):
+        replies = [("valid", response(), None), ("http", (401, b'{}'), None),
+                   ("timeout", None, TimeoutError("synthetic timeout")),
+                   ("blocked", None, ValueError("API域名解析到非公共IP，已阻止发送")),
+                   ("adapter", None, api.APIError("adapter_error", "local_adapter", False)),
+                   ("no-usage", response(usage=False), None)]
+        results = {}
+        for ident, reply, error in replies:
+            results[ident], _ = self.call(self.payload(ident=ident), reply=reply, error=error)
+        rows = self.api._usage_ledger()["requests"]
+        for row in rows:
+            result = results[row["request_id"]]
+            for field in ("request_sent", "new_api_calls", "http_status"):
+                self.assertEqual(row[field], result[field])
+            self.assertEqual(row["error_code"], result.get("error_code"))
+        self.assertIsNone(results["timeout"]["request_sent"])
+        self.assertIsNone(results["no-usage"]["cost"]["estimated_cny"])
+        self.assertEqual(self.api.usage_summary()["calls"], 4)
+        self.assertEqual(self.api.usage_summary()["unknown_calls"], 1)
+        self.assertEqual(self.api.usage_summary()["requests"], 6)
+        with patch.object(self.api, "_send", side_effect=AssertionError("no duplicate send")):
+            duplicate = self.api.extract(self.payload(ident="valid"))
+        self.assertEqual(duplicate["new_api_calls"], 0)
+        self.assertTrue(duplicate["deduplicated"])
+        self.assertEqual(self.api.usage_summary()["calls"], 4)
+
+    def test_legacy_usage_summary_is_read_only_and_unknown_never_becomes_zero(self):
+        rows = [dict(request_id=ident, signature=str(index) * 64,
+                     state="pending" if ident == "pending" else "completed",
+                     outcome="valid" if ident in ("valid", "old-valid") else "transport_failure",
+                     estimated_cny=None) for index, ident in enumerate(("valid", "local", "unknown", "pending", "old-valid"))]
+        self.api.directory.mkdir(parents=True)
+        original = json.dumps(dict(version=1, requests=rows), indent=3).encode()
+        self.api.usage_path.write_bytes(original)
+        for ident, result in [("local", dict(request_sent=False, new_api_calls=0)),
+                              ("old-valid", dict(status="valid", new_api_calls=1))]:
+            directory = self.api.directory / "requests" / ident
+            directory.mkdir(parents=True)
+            (directory / "result.json").write_text(json.dumps(dict(request_id=ident, **result)))
+        self.api.ledger_path.write_text("historical budget is not read by usage summary")
+        summary = self.api.usage_summary()
+        self.assertEqual((summary["calls"], summary["unknown_calls"], summary["pending"]), (4, 2, 1))
+        self.assertEqual(self.api.usage_path.read_bytes(), original)
+
+    def test_corrupt_call_fields_fail_instead_of_reporting_zero(self):
+        self.api.directory.mkdir(parents=True)
+        for fields in (dict(request_sent="false"), dict(new_api_calls=True),
+                       dict(request_sent=False, new_api_calls=1), dict(http_status="200"),
+                       dict(error_code="unrecognized-local-diagnostic")):
+            row = dict(request_id="corrupt", signature="a" * 64, state="completed", estimated_cny=None, **fields)
+            original = json.dumps(dict(version=1, requests=[row])).encode()
+            self.api.usage_path.write_bytes(original)
+            with self.subTest(fields=fields), self.assertRaisesRegex(ValueError, "用量记录损坏"):
+                self.api.usage_summary()
+            self.assertEqual(self.api.usage_path.read_bytes(), original)
+
+    def test_backend_json_defaults_do_not_force_custom_or_other_provider_capabilities(self):
+        for provider in ("openai", "anthropic", "gemini", "dashscope", "moonshot"):
+            self.assertFalse(self.api._config(dict(provider=provider, api_key=KEY))["json_mode"])
+        self.assertTrue(self.api._config(self.config())["json_mode"])
+        self.assertFalse(self.api._config(self.config(json_mode=False))["json_mode"])
+        def compatible(config, body, key):
+            return (400, b'{"error":"response_format unsupported"}') if "response_format" in body else response()
+        with patch.object(self.api, "_send", side_effect=compatible) as send:
+            default = self.api.extract(self.payload(ident="custom-default", config=self.custom()))
+            explicit = self.api.extract(self.payload(ident="custom-explicit", config=self.custom(json_mode=True)))
+        self.assertEqual(default["status"], "valid")
+        self.assertEqual(explicit["status"], "http_error")
+        self.assertEqual(send.call_count, 2)
+
     def test_request_id_idempotency_and_conflicts_across_instances(self):
         original, _ = self.call()
         second = api.TeacherAPI(self.root)

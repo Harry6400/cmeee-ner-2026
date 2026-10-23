@@ -9,6 +9,7 @@ from serve_stage5 import make_server
 class FakeAPI:
     def __init__(self,root): pass
     def budget(self):return dict(baseline=16.819840,trial_limit=15,spent=0)
+    def usage_summary(self):return dict(requests=0,calls=0,unknown_calls=0,pending=0,source='output/teacher-api/usage.json')
     def check(self,config):return dict(valid=True,network_call=False)
     def models(self,config):return dict(status='models_checked',models=[dict(id='synthetic-model')],selected_model_found=True,generation_requests=0)
     def extract(self,data):raise RuntimeError('secret-api-key-must-not-escape')
@@ -37,6 +38,22 @@ class TeacherServerTests(unittest.TestCase):
         self.assertEqual(self.request('/api/cases')[1][0]['case_id'],'F04')
         self.assertEqual(self.request('/api/case?id=F04')[1]['routes']['N1']['source'],'frozen')
         self.assertEqual(self.request('/api/case?id=absent')[0],404)
+    def test_health_reads_current_usage_and_does_not_hide_corruption_as_zero(self):
+        from teacher_api import TeacherAPI
+        self.project._api=TeacherAPI(self.root)
+        worker=self.project._api;worker.directory.mkdir(parents=True)
+        worker.ledger_path.write_text('historical ledger deliberately unreadable')
+        worker.usage_path.write_text(json.dumps(dict(version=1,requests=[
+            dict(request_id='received',signature='a'*64,state='completed',estimated_cny=None,request_sent=True,new_api_calls=1),
+            dict(request_id='uncertain',signature='b'*64,state='pending',estimated_cny=None),
+            dict(request_id='local',signature='c'*64,state='completed',estimated_cny=None,request_sent=False,new_api_calls=0)])))
+        status,data=self.request('/api/health')
+        self.assertEqual(status,200);self.assertEqual(data['teacher_API_calls'],2)
+        self.assertEqual(data['teacher_API_calls_unknown'],1)
+        self.assertEqual(data['teacher_API_usage']['source'],'output/teacher-api/usage.json')
+        worker.usage_path.write_text('{broken')
+        status,data=self.request('/api/health')
+        self.assertEqual(status,503);self.assertEqual(data['error_code'],'usage_unavailable');self.assertNotIn('teacher_API_calls',data)
     def test_model_directory_is_public_local_keyless_and_budget_free(self):
         with patch('teacher_api._resolve_hostname',side_effect=AssertionError('preset lookup must be local')):
             status,data=self.request('/api/api-presets')

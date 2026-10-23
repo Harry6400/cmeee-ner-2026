@@ -251,6 +251,20 @@ class TeacherProject:
         finally: self.cpu_lock.release()
     def artifact_paths(self):
         candidate=self.root/'deliverables/stage6/candidate'
+        # A local publication pointer selects one exact candidate without replacing old releases.
+        pointer=self.root/'deliverables/stage6/current-candidate.json'
+        selected_archive=None
+        if pointer.is_file():
+            current=read_json(pointer)
+            selected=[]
+            for field in ('directory','archive'):
+                value=current.get(field)
+                if not isinstance(value,str) or not value or Path(value).is_absolute(): raise ValueError('Invalid candidate pointer')
+                path=(self.root/value).resolve()
+                if not path.is_relative_to(self.root.resolve()): raise ValueError('Candidate pointer leaves project')
+                selected.append(path)
+            candidate,selected_archive=selected
+            if not candidate.is_dir() or not selected_archive.is_file(): raise ValueError('Selected candidate is missing')
         specifications=[('report','报告PDF','报告.pdf'),('abstract','项目摘要','项目摘要.md'),('statement-wu','吴皓睿贡献声明','贡献声明_*_吴皓睿.md'),('statement-zhou','周栩乐贡献声明','贡献声明_*_周栩乐.md'),('readme','复现说明','README.md')]
         result={}
         for ident,label,name in specifications:
@@ -258,7 +272,7 @@ class TeacherProject:
             found=next((match for base in roots for match in (base.glob(name) if '*' in name else [base/name]) if match.is_file()),None)
             result[ident]=(label,found)
         zip_roots=[self.root/'deliverables/stage6',self.root]
-        source_zip=next((match for base in zip_roots for match in base.glob('*_中文医学实体抽取_本地候选.zip') if match.is_file()),None)
+        source_zip=selected_archive or next((match for base in zip_roots for match in base.glob('*_中文医学实体抽取_本地候选.zip') if match.is_file()),None)
         result['source-zip']=('源码本地候选ZIP',source_zip)
         result['weights']=('正式推理权重包',next((p for p in [self.root/'deliverables/stage6/upload/中文医学实体抽取_正式推理权重_seed20261019.zip'] if p.is_file()),None))
         return result

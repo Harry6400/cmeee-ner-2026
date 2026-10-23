@@ -38,7 +38,10 @@ def handler_for(project):
                 if path=='/favicon.ico': return self.send(204,b'','image/x-icon')
                 if re.fullmatch(r'/ui/[A-Za-z0-9_-]+\.(?:js|css)',path): return self._file(project.root/path.lstrip('/'))
                 if re.fullmatch(r'/report-source/figures/[A-Za-z0-9_-]+\.(?:svg|png)',path): return self._file(project.root/path.lstrip('/'))
-                if path=='/api/health': return self.send(200,dict(status='ready',runtime='local CPU',model_routes='live D0/N0/N1 CPU;separate historical replay',local_CPU_api_calls=0,teacher_API_calls=project.api().budget().get('calls')))
+                if path=='/api/health':
+                    try: usage=project.api().usage_summary()
+                    except (OSError,ValueError): return self.send(503,dict(error='API用量记录不可读；请检查本地脱敏日志。',error_code='usage_unavailable'))
+                    return self.send(200,dict(status='ready',runtime='local CPU',model_routes='live D0/N0/N1 CPU;separate historical replay',local_CPU_api_calls=0,teacher_API_calls=usage['calls'],teacher_API_calls_unknown=usage['unknown_calls'],teacher_API_usage=usage))
                 if path=='/api/api-presets':
                     from teacher_api import api_presets
                     return self.send(200,api_presets())
@@ -101,7 +104,7 @@ def handler_for(project):
                 project.record(event='http_error',method='POST',error_type=type(exc).__name__)
                 if path in ('/api/api-check','/api/api-models','/api/extract-api'):
                     return self.send(503,public_diagnostic(exc))
-                return self.send(503,dict(error='本次操作未完成；请检查配置、预算或本地日志。'))
+                return self.send(503,dict(error='本次操作未完成；请检查配置或本地日志。'))
     return Handler
 
 
