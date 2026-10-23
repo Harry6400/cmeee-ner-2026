@@ -1,64 +1,70 @@
-# 中文医学实体抽取
+# 中文医学实体抽取：选择性同步副本
 
-本仓库提供中文医学命名实体识别的源码基础，支持精确字符跨度定位。实体偏移按 Unicode 码点计数，区间采用左闭右开格式 `[start, end)`。
+本仓库为私有副本 `Harry6400/cmeee-ner-2026`；正式开发主库为 `Harry6400/cmeee-ner-dev`。副本按已审阅白名单选择性同步，保留自身历史，不是主库制作目录或课程提交包的完整镜像。
 
-## 主要源码模块
+文档适配基线为 `7ccd2fb`。周③只整理说明材料；本次没有重新运行测试、推理、评估、训练或 API，也没有对当前副本作 Windows 实机验收。历史运行与用户确认均须按对应日期、平台和源码版本理解。
 
-- `scripts/ner_core.py`：实体校验、文本窗口处理、跨度合并、词典辅助函数和严格实体指标。
-- `scripts/ner_model.py`：字符级编码器与多标签 GlobalPointer 跨度分类头。
-- `scripts/entity_wire.py`：将生成的实体表面形式及其出现序号映射为原文中的精确坐标。
-- `scripts/ner_cli.py`：校验并输出一条实体记录。
+## 源码、资源与验证边界
 
-## 运行环境
+模型包括训练词典 D0、字符 BiLSTM＋GlobalPointer N0、中文 BERT＋GlobalPointer N1，以及生成式 L0/L3。实体区间使用 Unicode 字符索引 `[start,end)`；自动抽取只供教学研究，不作临床诊断。
 
-项目固定使用 Python 3.11，依赖版本由 `uv.lock` 锁定。安装依赖：
+副本已同步模型、CPU推理、教师服务、前端、开发诊断、历史核查、补充训练及验收工具的相关代码。脚本存在不等于全部运行材料齐备；历史训练入口也不构成当前资源授权。
+
+以下材料不随本批文档提供：数据、权重、课程原件、私人账本、完整预测、制作期证据、报告与视频。副本还缺 `ui/project-data.json`、`ui/demo-cases.json` 及两张实验 SVG，因此不保证错误分析、实验结果、图表或交付页完整可用。缺资源时保留真实缺项，不生成占位结果冒充实验数据。
+
+## 环境和基本入口
+
+使用 Python 3.11 与 `uv.lock` 固定依赖。以下为操作参考；本次只适配文档，不执行这些命令：
 
 ```sh
 uv sync --locked
-```
-
-在仓库根目录校验一条实体记录：
-
-```sh
 uv run --locked python scripts/ner_cli.py \
   --text '出现发热与咳嗽。' \
   --entities '[{"start":2,"end":4,"type":"sym","text":"发热"}]'
 ```
 
-## 数据准备
-
-请使用经授权的 CMeEE-V2 数据压缩包，并将它保存在本仓库之外。数据准备程序会把本地文件写入已被 Git 忽略的 `data/` 目录；Git 不包含语料或生成的数据划分。使用前请阅读 `configs/data-protocol.json` 和 `THIRD_PARTY_NOTICES.md`。
+上述短文为合成示例。数据准备使用经许可取得的官方原包，不从其他项目复制数据：
 
 ```sh
-uv run --locked python scripts/prepare_data.py \
-  --archive /path/to/CMeEE-V2.zip \
-  --output data \
-  --seed 20261019 \
-  --evaluation-size 500
-
+uv run --locked python scripts/prepare_data.py --archive /实际路径/CMeEE-V2.zip --output data
 uv run --locked python scripts/prepare_data.py --output data --verify
 ```
 
-准备过程会校验字符偏移与标签，按相同文本分组后再划分数据，隔离训练集与留出集中的完全重复文本，并记录启发式近似重叠审计。该程序不会训练模型，也不会调用 API。
+已有完整数据时先核验；半成品和已有输出不覆盖。数据、模型各自遵守[数据来源与许可](docs/DATA_LICENSE.md)和[第三方声明](THIRD_PARTY_NOTICES.md)。
 
-运行合成边界测试：
+## 教师资源与固定权重复现
 
-```sh
-python3 -B -m unittest discover -s tests -p 'test_prepare_data.py' -v
-```
+[教师资源清单](configs/teacher-assets.json)记录独立资源包的大小、哈希、主种子和历史验证版本；[Windows资产清单](configs/windows-assets.json)用于对应工具的资产检查。清单不是资源包，当前分享链接仍未提供。
 
-## 数据与模型资源
+资源应由有权限的操作者通过已授权的非商业课程渠道取得，核验哈希和许可后放置为 `assets/CMeEE-V2.zip` 与 `models/trained/`。不把数据与权重纳入 Git，不用新训练替代正式权重。
 
-仓库不包含数据集压缩包、预训练模型、训练检查点或实验输出。请从权威来源获取各项资源，核对相应许可，并将资源保存在版本控制之外。项目级资源范围见 `THIRD_PARTY_NOTICES.md`。
-
-## 独立指标与补充核算
-
-`scripts/stage4_metrics.py` 使用 Python 标准库重算实体与字符指标、配对统计和多种子汇总；`tests/test_stage4_metrics_public.py` 只使用合成样例。`scripts/verify_supplement.py` 与 `scripts/verify_supplement_gpu.py` 也只依赖 Python 标准库，用于核对已有开发记录，不会启动训练、GPU 或 API。
-
-合成检查命令：
+资产齐备并另获运行授权后，固定权重 CPU 复现入口为：
 
 ```sh
-python3 -B -m unittest discover -s tests -p 'test_stage4_metrics_public.py' -v
+uv run --locked python scripts/teacher_reproduce.py --archive assets/CMeEE-V2.zip --output output/teacher-new
 ```
 
-两个核算脚本需要项目已有的数据、预测和运行记录；本补丁包不含这些材料。配置文件仅用于描述既有开发实验，不构成训练或资源授权。
+该入口会生成 D0/N0/N1 的新预测并核对冻结期望，不依赖历史答案；完整留出默认各5000条。输出目录必须不存在，失败输出保留，不能修改阈值或冻结期望来通过。历史预期严格实体 Micro F1 为38.0192%／60.2793%／66.8942%，精确值见 `configs/reproduction-expected.json`，它们不是本轮新运行结果。
+
+教师页面入口为 `scripts/serve_stage5.py`，默认本机端口8765。本地模型需对应资产；展示数据、案例、SVG和交付成品仍按上文缺项处理。运行服务不自动补齐这些材料。
+
+## 现场 API
+
+页面支持六家服务商及自定义兼容接口。保存只校验本地配置，刷新模型目录不发送待抽取原文；主动点击 API 抽取才外发输入。只使用获准发送的公开或合成文本，不输入真实患者隐私；密钥仅保存在页面内存。
+
+现场入口没有本地预算、余额或累计费用拦截，在 `output/teacher-api/usage.json` 记录用量和参考费用；参考估费不是账单，未知费用不填0，失败及发送状态不确定的记录保留，同一请求ID不重复发送。自定义接口默认不强制 API 级 JSON 模式，输出仍须严格校验；不因能力不兼容自动重试。
+
+方法对比固定使用启动时的配置快照。配置变化后停止未发送路线，保留已发送请求的真实结果；结果与导出区分失败、未运行和未检出。正式历史 L0/L3 完整主 F1 仍为 N/A；现场演示不能补写历史实验成绩。本次同步不授权任何实际 API 请求。
+
+## 记录、材料与责任说明
+
+- [实验技术补充](docs/实验技术补充.md)：保存指标、费用与开发诊断口径；涉及的主库证据和源数据不随本批提供，数值未在本轮重算。
+- [Windows验收交接](docs/Windows验收交接.md)：正式主库的历史流程与未来另行验收条件；不表示副本已验收或当前获准执行。
+- [全项目贡献映射](docs/全项目贡献映射.md)与[AI制作边界](docs/示范角色与AI制作边界.md)：52%／48%是教学责任映射，不是由提交数推导的真人贡献证明；实际复核、工时与签署须如实记录。
+- [待人工完成清单](docs/待人工完成清单.md)：区分主库历史确认、当前副本未验范围和待完成事项。
+
+2026-10-22正式主库源码 `3d7da369` 的 Windows 11＋Chrome 验收已由接收方核查，Edge和后续改动不在证明范围。教师资源清单另记录运行代码 `b697c792` 的 Mac CPU 复现。这些记录不证明当前副本 `7ccd2fb` 已完成相同检查。
+
+报告、摘要、贡献声明、PDF排版、视频、网盘链接与课程正式提交在主库制作区另行管理。`docs/STATUS.md`、`docs/PLAN.md`、`report-source/`、`deliverables/` 和大部分 `evidence/` 不是本批交付文件；文档中的相关路径只用于追溯主库记录，不应当作副本本地可用入口。
+
+自有实现适用[MIT许可证](LICENSE)，第三方材料分别按其许可处理。本次未创建新实验结果、人工签署或正式课程提交。
