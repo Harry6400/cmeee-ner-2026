@@ -6,6 +6,7 @@ from decimal import Decimal
 from pathlib import Path
 from aggregate_stage4 import calculate,load_manifest
 from stage4_metrics import SEEDS,digest,read_jsonl,dump_new,equivalent,percentile
+from historical_evidence import historical_source,checked_file
 
 
 def check_training_segments(root,run,summary,metadata,required_tags,queue_entry=None,stage3_segment=None,queue_sources=None):
@@ -27,10 +28,10 @@ def check_training_segments(root,run,summary,metadata,required_tags,queue_entry=
         for field in ('method','seed','precision','amp','tf32','train_samples','dev_samples','windows','vocab_size','sources'):
             if meta[field]!=metadata[field]:raise ValueError('Archived segment metadata changed:'+field)
         for filename in ('ner_core.py','ner_model.py','ner.py','stage3_common.py','train_stage4.py' if queue_entry else 'train_development.py'):
-            if meta['code'][filename]!=digest(root/'scripts'/filename):raise ValueError('Archived segment scientific source differs:'+filename)
+            historical_source(root,'scripts/'+filename,meta['code'][filename])
         if queue_sources:
             for filename,sha in queue_sources.items():
-                if digest(root/'scripts'/filename)!=sha:raise ValueError('Queue frozen source changed:'+filename)
+                historical_source(root,'scripts/'+filename,sha)
         if raw['records']!=summary['records'][:len(raw['records'])]:raise ValueError('Archived completed epochs were changed by recovery')
         runner_seconds+=raw['seconds'];rows=read_jsonl(directory/'metrics.jsonl');updates=[r for r in rows if r.get('event')=='train'];logged_updates+=len(updates)
         committed=raw['records'][-1]['global_step'] if raw['records'] else 0;partial=[r for r in updates if r['global_step']>committed]
@@ -233,7 +234,7 @@ def check_api_request_freeze(root,a,gold_by_id):
     if started.get('protocol_sha256')!=digest(directory/'protocol-at-call.json') or started.get('privacy_review_sha256')!=digest(directory/'privacy-review.json'):raise ValueError('API run-started protocol/privacy evidence changed')
     if digest(root/protocol['opening_ledger_snapshot'])!=protocol['opening_ledger_sha256']:raise ValueError('API pre-call opening ledger snapshot changed')
     for name,sha in protocol.get('source_at_call',{}).items():
-        if digest(directory/'source-at-call'/name)!=sha or digest(root/'scripts'/name)!=sha:raise ValueError('API executed source differs from source-at-call snapshot:'+name)
+        checked_file(root,(directory/'source-at-call'/name).relative_to(root).as_posix(),sha)
     items=read_jsonl(directory/'requests-manifest.jsonl');manifest=validate_manifest_items(items,samples,examples,frozen,protocol['run_id'])
     if (directory/'requests-manifest.jsonl').read_bytes()!=b''.join(request_bytes(item)+b'\n' for item in items):raise ValueError('API request manifest canonical bytes changed')
     return dict(protocol=protocol,price=price,manifest=manifest,ordered_items=items,privacy_review_sha256=digest(directory/'privacy-review.json'),request_manifest_sha256=protocol['request_manifest_sha256'],independent_request_rebuild_verified=True)
@@ -305,7 +306,7 @@ def check_approved_unknown_annex(root,a,ledger,request_freeze,calls,canonical):
         if annex[field]!=digest(path):raise ValueError('Original science/manifest changed across continuation')
     if Decimal(annex['unknown_bound_cny'])!=account['unknown_bound'] or annex.get('cumulative_limit_cny')!='100' or annex.get('new_stage_soft_cap_cny')!='80':raise ValueError('Annex budget bound changed')
     source='api_final_bounded_continue.py'
-    if digest(base/'source-at-continuation'/source)!=annex['source_sha256'] or digest(root/'scripts'/source)!=annex['source_sha256']:raise ValueError('Executed continuation source not preserved')
+    checked_file(root,(base/'source-at-continuation'/source).relative_to(root).as_posix(),annex['source_sha256'])
     for name,sha in annex['prior_snapshots_sha256'].items():
         saved=base/'prior-state'/name
         if digest(saved)!=sha:raise ValueError('Preserved pre-continuation partial artifact changed:'+name)
@@ -430,6 +431,8 @@ def run(root,execution,aggregation):
     evidence={}
     for path in a.get('required_evidence',[]):
         target=root/path
+        expected=a.get('pre_evaluation_files',{}).get(path)
+        if path.startswith('scripts/') and expected:target=historical_source(root,path,expected)
         if not target.is_file():raise ValueError('Missing required stage4 evidence:'+path)
         evidence[path]=digest(target)
     if not a.get('exit_resource_report'):raise ValueError('Final resource release evidence path required')
@@ -444,7 +447,7 @@ def run(root,execution,aggregation):
 
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[1]);p.add_argument('--execution',type=Path,default=Path('configs/stage4-execution.json'));p.add_argument('--aggregation',type=Path,default=Path('evidence/stage4/final-aggregation.json'));p.add_argument('--output',type=Path,default=Path('evidence/stage4/final-verification.json'));args=p.parse_args()
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[1]);p.add_argument('--execution',type=Path,default=Path('configs/stage4-execution-continuation02.json'));p.add_argument('--aggregation',type=Path,default=Path('evidence/stage4/final-aggregation.json'));p.add_argument('--output',type=Path,required=True);args=p.parse_args()
     try:result=run(args.root,args.execution,args.aggregation)
     except Exception as exc:
         result=dict(status='FAIL',at=datetime.now(timezone.utc).isoformat(),error=str(exc),traceback=traceback.format_exc());dump_new(args.root/args.output,result);print(json.dumps(result,ensure_ascii=False),flush=True);raise

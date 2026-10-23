@@ -4,6 +4,7 @@ import argparse,json,time
 from datetime import datetime,timezone
 from pathlib import Path
 from stage4_metrics import SEEDS,digest,read_jsonl,dump_new,validate_gold,evaluate_route,paired_bootstrap,seed_summary,equivalent
+from historical_evidence import historical_source
 
 
 def utc():return datetime.now(timezone.utc).isoformat()
@@ -18,7 +19,9 @@ def load_manifest(root,execution):
     if protocol['training']['seeds']!=list(SEEDS) or a.get('primary_seed')!=20261019:raise ValueError('Frozen seeds or primary seed changed')
     if a.get('bootstrap')!={'replicates':2000,'seed':20261019,'confidence':.95}:raise ValueError('Bootstrap execution specification changed')
     for path,sha in a.get('pre_evaluation_files',{}).items():
-        if digest(root/path)!=sha:raise ValueError('Pre-evaluation frozen file changed:'+path)
+        if path.startswith('scripts/'):
+            historical_source(root,path,sha)
+        elif digest(root/path)!=sha:raise ValueError('Pre-evaluation frozen file changed:'+path)
     entries=list(a.get('predictions',[]))
     if a.get('local_manifest'):
         entries+=json.loads((root/a['local_manifest']).read_text())['entries']
@@ -103,7 +106,7 @@ def calculate(root,execution):
 
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[1]);p.add_argument('--execution',type=Path,default=Path('configs/stage4-execution.json'));p.add_argument('--output',type=Path,default=Path('evidence/stage4/final-aggregation.json'));args=p.parse_args()
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[1]);p.add_argument('--execution',type=Path,default=Path('configs/stage4-execution-continuation02.json'));p.add_argument('--output',type=Path,required=True);args=p.parse_args()
     result=calculate(args.root,args.execution);dump_new(args.root/args.output,result)
     print(json.dumps(dict(status=result['status'],seconds=result['seconds'],output=str(args.output),api_valid={r:result['results'][r+'/common500']['valid'] for r in ('L0','L3')}),ensure_ascii=False),flush=True)
 

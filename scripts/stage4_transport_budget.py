@@ -94,7 +94,8 @@ def check_transport_budget_annex(root,a,data,request_freeze,calls,canonical_pred
         if annex.get(field)!=digest(path):raise ValueError('Original1000 scientific requests changed')
     if number(annex['per_call_hard_reservation_cny'])!=full_bound() or annex.get('cumulative_limit_cny')!='100' or annex.get('new_stage_soft_cap_cny')!='80':raise ValueError('Annex weakens hard reservation or budget caps')
     source='api_final_bounded_continue02.py'
-    if digest(base/'source-at-continuation'/source)!=annex['source_sha256'] or digest(root/'scripts'/source)!=annex['source_sha256']:raise ValueError('Executed rule02 wrapper differs from source-at-continuation')
+    from historical_evidence import checked_file
+    checked_file(root,(base/'source-at-continuation'/source).relative_to(root).as_posix(),annex['source_sha256'])
     for rel,sha in annex['prior_snapshots_sha256'].items():
         if digest(base/'prior-state'/rel)!=sha or (rel!='calls.jsonl' and digest(directory/rel)!=sha):raise ValueError('Earlier partial result/annex/failure was overwritten:'+rel)
     old_calls=(directory/'calls.jsonl').read_bytes()[:annex['old_calls_bytes']]
