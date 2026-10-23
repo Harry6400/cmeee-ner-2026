@@ -1,0 +1,40 @@
+{
+  "stage": 6,
+  "authorization": "explicit_user_implementation_2026-10-20",
+  "target_instance": "qha40gpu-2",
+  "runtime_mode": "sequential_single_gpu_fp32",
+  "dataset": "CMeEE-V2 fixed processed train13497/dev1503",
+  "split": [
+    "data/processed/train.jsonl",
+    "data/processed/dev.jsonl"
+  ],
+  "train_or_validation_or_test": "development training and validation only",
+  "checkpoint_source": "pinned official BERT initialization;full own last checkpoint for interruption recovery",
+  "output_dir": "/nfsdata_a40/cyf/codes/CT/cmeee_ner/runs/stage6-supplement-20261020",
+  "run_root": "runs/stage6-supplement-20261020",
+  "evidence_root": "evidence/stage6-template-supplement",
+  "study_config": "configs/stage6-supplement.json",
+  "study_sha256": "eee2e22cb0aff2055a9c4e81f0544e7861962320da6e63a6c41012c311175f3c",
+  "gpu_uuid": "GPU-f77a1700-de70-05d2-048f-18c8f9aa5974",
+  "authorized_gpu_uuids": [
+    "GPU-f77a1700-de70-05d2-048f-18c8f9aa5974"
+  ],
+  "continuous_run_budget": 84600,
+  "allowed_actions": [
+    "four declared RoPE-off training jobs",
+    "processed-dev inference and independent metrics",
+    "CPU threshold and latency experiments",
+    "template-aligned report draft"
+  ],
+  "forbidden_actions": [
+    "sealed data access for supplement",
+    "modifying frozen results or weights",
+    "new API calls",
+    "other GPUs",
+    "foreign process changes",
+    "instance lifecycle changes",
+    "overwriting final PDF or ZIP before draft review"
+  ],
+  "resource_gate": "UUID7;no foreign compute PIDs;memory<=128MiB;free>=12GiB;diskfree>=20GiB;project<=50GiB",
+  "api_enabled": false
+}
