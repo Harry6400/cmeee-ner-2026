@@ -2,11 +2,9 @@
 
 比较训练词典 D0、字符 BiLSTM＋GlobalPointer N0、中文 BERT＋GlobalPointer N1，以及零样本／三样本 API 抽取 L0/L3。程序返回九类实体、原文和 Unicode 右开字符区间，支持嵌套实体、方法对比、JSON 导出和固定权重 CPU 复现。
 
-本项目用于非商业课程教学与研究。初始代码及示范制作由 AI 完成，界面姓名和教学责任映射不代表已发生的真人贡献、工时或签署。自动抽取结果需要核对，不用于临床诊断。
-
 ## 环境与独立资源
 
-使用 Python 3.11 和 uv。依赖由 [pyproject.toml](pyproject.toml) 与 [uv.lock](uv.lock) 固定；Node.js 仅用于可选的前端离线检查。源码仓库为私有 `Harry6400/cmeee-ner-2026`，读取者需具备仓库访问权限。
+使用 Python 3.11 和 uv。依赖由 [pyproject.toml](pyproject.toml) 与 [uv.lock](uv.lock) 固定；Node.js 仅用于可选的前端离线检查。源码仓库为公开的 [Harry6400/cmeee-ner-2026](https://github.com/Harry6400/cmeee-ner-2026)。
 
 数据和模型权重单独取得，不随 Git 分发。使用已收到且符合许可的正式资源包，先按 [教师资源清单](configs/teacher-assets.json) 或 [Windows 资产清单](configs/windows-assets.json) 核对文件名、大小和 SHA-256，再将资源包解压到源码根目录：
 
@@ -73,13 +71,12 @@ uv run --locked python scripts/teacher_reproduce.py --archive assets/CMeEE-V2.zi
 
 同一服务只运行一个完整复现任务，任务运行时可能拒绝其他冲突请求。异常退出后先核对原任务、进程和状态，不直接删除保护锁。
 
-## 文档与验证范围
+## 文档与运行说明
 
 - [参数、指标与运行限制](docs/实验技术补充.md)
-- [Windows CPU 验收流程](docs/Windows验收交接.md)
 - [数据来源与许可](docs/DATA_LICENSE.md)
 - [第三方资源声明](THIRD_PARTY_NOTICES.md)及 [MIT 许可证](LICENSE)
 
-既有 Windows 11＋Chrome 验收对应开发源码 `3d7da369`，Edge 未测；该记录不证明后续版本已经完成新的 Windows 实机验收。教师资源清单里的 Mac CPU 验证同样只覆盖其记录的源码和环境。本仓库中的历史配置、合同与测试源码不自动代表当前资源授权或本次运行通过。
+准备好独立资源并安装锁定依赖后，可按上文命令启动页面，或执行 D0/N0/N1 的固定权重 CPU 复现。复现结果、汇总指标与运行日志保存到指定的新输出目录。
 
-仓库保留训练、恢复、历史评估和文档构建源码，便于核对实现。它们可能依赖独立数据、模型、历史日志、费用账本、固定服务器路径或制作环境，不能把“源码存在”当作整个历史流程可直接重跑。普通页面启动和 CPU 复现不依赖这些制作材料。
+仓库提供训练、断点恢复、历史评估和报告构建脚本。使用时按各入口准备对应的数据、模型、实验记录与配置。
