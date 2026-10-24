@@ -1,0 +1,29 @@
+{
+  "stage": 5,
+  "authorization": "explicit user request 2026-10-20",
+  "runtime": "local CPU only",
+  "policy": {
+    "min_term_count": 3,
+    "min_term_length": 3,
+    "min_type_purity": 0.9,
+    "context_chars": 8,
+    "min_context_similarity": 0.5,
+    "min_context_margin": 0.15,
+    "min_context_type_examples": 2,
+    "api_repair": "drop only overflow occurrence when all real occurrences of same surface/type already covered; otherwise fail closed"
+  },
+  "selection": "fixed prospective patch parameters before replay; motivated by observed final failures; retrospective, not unbiased test",
+  "train_source": "data/processed/train.jsonl",
+  "train_sha256": "5210ef07e22fa80d2ff1226bf7c8e8e8f4be8290c6d3d97b809528214bc8faa0",
+  "dev_source": "data/processed/dev.jsonl",
+  "diagnostic_final_source": "data/sealed/common500.jsonl",
+  "no_training": true,
+  "no_API": true,
+  "no_gpu": true,
+  "main_results_immutable": true,
+  "run_root": "runs/stage5-20261020",
+  "source_sha256": {
+    "stage5_repairs.py": "96d12a6bfac410606e5466618265836aa727a812ab25729308ae3d920d9bde2b",
+    "run_stage5.py": "a9b79f10d6c67a2474ab0bbb49f2c757689d71fe53e6f76c78990620a302664c"
+  }
+}

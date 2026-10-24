@@ -1,29 +1,59 @@
-# Local environments and secrets
-.venv/
-.cache/
-.env
-.env.*
-
-# Datasets, checkpoints, outputs, and private evidence
-data/
-models/
-runs/
-evidence/
-private/
-deliverables/
-report-source/
-output/
-
-# Generated and potentially licensed artifacts
-__pycache__/
+# Python and local tooling
+/.venv/
+/.cache/
+/.tmp/
+/__pycache__/
 **/__pycache__/
 *.py[cod]
+.DS_Store
+
+# Internal instructions, credentials, and private material
+/AGENTS.md
+/.agents/
+/.codex/
+.env
+.env.*
+!.env.example
+/private/
+
+# External data, model assets, and generated runs
+/assets/
+/asset-licenses/
+/data/
+/models/
+/runs/
+/output/
+/evidence/
+/deliverables/
+
+# Retain only the two reviewed web charts from report authoring material
+/report-source/*
+!/report-source/figures/
+/report-source/figures/*
+!/report-source/figures/rope-paired-effects.svg
+!/report-source/figures/threshold-tradeoff.svg
+
+# Keep only runtime and license documentation
+/docs/*
+!/docs/DATA_LICENSE.md
+!/docs/Windows验收交接.md
+!/docs/实验技术补充.md
+
+# Datasets, checkpoints, logs, and submission artifacts
 *.jsonl
+*.zip
 *.pt
 *.pth
+*.bin
 *.safetensors
+*.ckpt
+*.log
 *.pdf
-*.zip
+*.tex
+*.doc
+*.docx
+*.ppt
+*.pptx
 *.mp4
 *.mov
 *.mp3
@@ -32,4 +62,3 @@ __pycache__/
 *.jpg
 *.jpeg
 *.webp
-.DS_Store

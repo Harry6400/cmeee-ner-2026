@@ -1,0 +1,2639 @@
+{
+  "schema_version": 1,
+  "source": "five actual frozen cases;historical replay,not new calls",
+  "license": "selected CMeEE-V2 teaching examples;attribution and CC BY-NC-SA4.0 data conditions retained",
+  "cases": [
+    {
+      "case": {
+        "case_id": "F01",
+        "id": "cmeee-v2-dev-00296",
+        "category": "分词边界过滤",
+        "route": "D0",
+        "input": "此法可将细菌分为两大类：不被乙醇脱色保留紫色为革兰阳性菌，脱色而被复染成红色为革兰阴性菌。",
+        "reference": [
+          {
+            "start": 4,
+            "end": 6,
+            "type": "mic",
+            "text": "细菌"
+          },
+          {
+            "start": 14,
+            "end": 18,
+            "type": "pro",
+            "text": "乙醇脱色"
+          },
+          {
+            "start": 23,
+            "end": 28,
+            "type": "mic",
+            "text": "革兰阳性菌"
+          },
+          {
+            "start": 29,
+            "end": 31,
+            "type": "pro",
+            "text": "脱色"
+          },
+          {
+            "start": 33,
+            "end": 35,
+            "type": "pro",
+            "text": "复染"
+          },
+          {
+            "start": 39,
+            "end": 44,
+            "type": "mic",
+            "text": "革兰阴性菌"
+          }
+        ],
+        "original_prediction": [
+          {
+            "start": 4,
+            "end": 6,
+            "type": "mic",
+            "text": "细菌"
+          },
+          {
+            "start": 14,
+            "end": 16,
+            "type": "dru",
+            "text": "乙醇"
+          }
+        ],
+        "repaired_prediction": [
+          {
+            "start": 4,
+            "end": 6,
+            "type": "mic",
+            "text": "细菌"
+          },
+          {
+            "start": 14,
+            "end": 16,
+            "type": "dru",
+            "text": "乙醇"
+          }
+        ],
+        "target": {
+          "start": 23,
+          "end": 28,
+          "type": "mic",
+          "text": "革兰阳性菌"
+        },
+        "observed_facts": "训练词典含该精确词；原始字符枚举能产生该跨度，jieba边界过滤将其删除。",
+        "attribution": "预处理过滤是本例漏检的直接可复核原因；不能外推为全部漏检原因。",
+        "limitations": "该词在训练中仅1次，低于已冻结的3次门槛，本例仍未恢复。其他训练高置信词可能恢复，但总体开发F1下降，补丁不进入正式默认。",
+        "evidence": {
+          "tokens": [
+            [
+              "此法",
+              0,
+              2
+            ],
+            [
+              "可",
+              2,
+              3
+            ],
+            [
+              "将",
+              3,
+              4
+            ],
+            [
+              "细菌",
+              4,
+              6
+            ],
+            [
+              "分为",
+              6,
+              8
+            ],
+            [
+              "两大类",
+              8,
+              11
+            ],
+            [
+              "：",
+              11,
+              12
+            ],
+            [
+              "不",
+              12,
+              13
+            ],
+            [
+              "被",
+              13,
+              14
+            ],
+            [
+              "乙醇",
+              14,
+              16
+            ],
+            [
+              "脱色",
+              16,
+              18
+            ],
+            [
+              "保留",
+              18,
+              20
+            ],
+            [
+              "紫色",
+              20,
+              22
+            ],
+            [
+              "为革兰",
+              22,
+              25
+            ],
+            [
+              "阳性菌",
+              25,
+              28
+            ],
+            [
+              "，",
+              28,
+              29
+            ],
+            [
+              "脱色",
+              29,
+              31
+            ],
+            [
+              "而",
+              31,
+              32
+            ],
+            [
+              "被",
+              32,
+              33
+            ],
+            [
+              "复染",
+              33,
+              35
+            ],
+            [
+              "成",
+              35,
+              36
+            ],
+            [
+              "红色",
+              36,
+              38
+            ],
+            [
+              "为革兰",
+              38,
+              41
+            ],
+            [
+              "阴性菌",
+              41,
+              44
+            ],
+            [
+              "。",
+              44,
+              45
+            ]
+          ],
+          "train_type_counts": {
+            "mic": 1
+          },
+          "repair_actions": [],
+          "raw_dictionary_match": true,
+          "target_start_token_boundary": false,
+          "target_end_token_boundary": true
+        },
+        "target_recovered": false,
+        "source_prediction": "runs/stage4-20261020/local-evaluation/D0/common500/predictions.jsonl",
+        "retrospective_known_case": true,
+        "original_is_real_failure": true
+      },
+      "routes": {
+        "D0": {
+          "status": "valid",
+          "entities": [
+            {
+              "start": 4,
+              "end": 6,
+              "type": "mic",
+              "text": "细菌"
+            },
+            {
+              "start": 14,
+              "end": 16,
+              "type": "dru",
+              "text": "乙醇"
+            }
+          ],
+          "source": "frozen_stage4_replay"
+        },
+        "N0": {
+          "status": "valid",
+          "entities": [
+            {
+              "start": 4,
+              "end": 6,
+              "type": "mic",
+              "text": "细菌"
+            },
+            {
+              "start": 23,
+              "end": 28,
+              "type": "mic",
+              "text": "革兰阳性菌"
+            },
+            {
+              "start": 39,
+              "end": 44,
+              "type": "mic",
+              "text": "革兰阴性菌"
+            }
+          ],
+          "source": "frozen_stage4_replay"
+        },
+        "N1": {
+          "status": "valid",
+          "entities": [
+            {
+              "start": 4,
+              "end": 6,
+              "type": "mic",
+              "text": "细菌"
+            },
+            {
+              "start": 23,
+              "end": 28,
+              "type": "mic",
+              "text": "革兰阳性菌"
+            },
+            {
+              "start": 39,
+              "end": 44,
+              "type": "mic",
+              "text": "革兰阴性菌"
+            }
+          ],
+          "source": "frozen_stage4_replay"
+        },
+        "L0": {
+          "status": "valid",
+          "entities": [
+            {
+              "start": 4,
+              "end": 6,
+              "type": "mic",
+              "text": "细菌"
+            },
+            {
+              "start": 14,
+              "end": 16,
+              "type": "dru",
+              "text": "乙醇"
+            },
+            {
+              "start": 23,
+              "end": 28,
+              "type": "mic",
+              "text": "革兰阳性菌"
+            },
+            {
+              "start": 39,
+              "end": 44,
+              "type": "mic",
+              "text": "革兰阴性菌"
+            }
+          ],
+          "source": "frozen_stage4_replay",
+          "wire": {
+            "entities": [
+              {
+                "text": "细菌",
+                "type": "mic",
+                "occurrence": 0
+              },
+              {
+                "text": "乙醇",
+                "type": "dru",
+                "occurrence": 0
+              },
+              {
+                "text": "革兰阳性菌",
+                "type": "mic",
+                "occurrence": 0
+              },
+              {
+                "text": "革兰阴性菌",
+                "type": "mic",
+                "occurrence": 0
+              }
+            ]
+          }
+        },
+        "L3": {
+          "status": "valid",
+          "entities": [
+            {
+              "start": 4,
+              "end": 6,
+              "type": "mic",
+              "text": "细菌"
+            },
+            {
+              "start": 14,
+              "end": 16,
+              "type": "dru",
+              "text": "乙醇"
+            },
+            {
+              "start": 16,
+              "end": 18,
+              "type": "pro",
+              "text": "脱色"
+            },
+            {
+              "start": 23,
+              "end": 28,
+              "type": "mic",
+              "text": "革兰阳性菌"
+            },
+            {
+              "start": 29,
+              "end": 31,
+              "type": "pro",
+              "text": "脱色"
+            },
+            {
+              "start": 33,
+              "end": 35,
+              "type": "pro",
+              "text": "复染"
+            },
+            {
+              "start": 39,
+              "end": 44,
+              "type": "mic",
+              "text": "革兰阴性菌"
+            }
+          ],
+          "source": "frozen_stage4_replay",
+          "wire": {
+            "entities": [
+              {
+                "text": "细菌",
+                "type": "mic",
+                "occurrence": 0
+              },
+              {
+                "text": "乙醇",
+                "type": "dru",
+                "occurrence": 0
+              },
+              {
+                "text": "脱色",
+                "type": "pro",
+                "occurrence": 0
+              },
+              {
+                "text": "革兰阳性菌",
+                "type": "mic",
+                "occurrence": 0
+              },
+              {
+                "text": "脱色",
+                "type": "pro",
+                "occurrence": 1
+              },
+              {
+                "text": "复染",
+                "type": "pro",
+                "occurrence": 0
+              },
+              {
+                "text": "革兰阴性菌",
+                "type": "mic",
+                "occurrence": 0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "case": {
+        "case_id": "F02",
+        "id": "cmeee-v2-dev-00202",
+        "category": "词表多数类丢失语境",
+        "route": "D0",
+        "input": "已发现在缺乏叶酸或用较大剂量的5-氟尿嘧啶（5-FU）等条件下处理，可致使胸腺核苷合成部分受到抑制，染色体结构就可能在某些特定的部位上产生裂隙或断裂。",
+        "reference": [
+          {
+            "start": 4,
+            "end": 8,
+            "type": "sym",
+            "text": "缺乏叶酸"
+          },
+          {
+            "start": 6,
+            "end": 8,
+            "type": "bod",
+            "text": "叶酸"
+          },
+          {
+            "start": 15,
+            "end": 21,
+            "type": "dru",
+            "text": "5-氟尿嘧啶"
+          },
+          {
+            "start": 22,
+            "end": 26,
+            "type": "dru",
+            "text": "5-FU"
+          },
+          {
+            "start": 37,
+            "end": 49,
+            "type": "sym",
+            "text": "胸腺核苷合成部分受到抑制"
+          },
+          {
+            "start": 37,
+            "end": 41,
+            "type": "bod",
+            "text": "胸腺核苷"
+          },
+          {
+            "start": 50,
+            "end": 53,
+            "type": "bod",
+            "text": "染色体"
+          },
+          {
+            "start": 50,
+            "end": 74,
+            "type": "sym",
+            "text": "染色体结构就可能在某些特定的部位上产生裂隙或断裂"
+          }
+        ],
+        "original_prediction": [
+          {
+            "start": 6,
+            "end": 8,
+            "type": "dru",
+            "text": "叶酸"
+          },
+          {
+            "start": 17,
+            "end": 21,
+            "type": "dru",
+            "text": "氟尿嘧啶"
+          },
+          {
+            "start": 37,
+            "end": 39,
+            "type": "bod",
+            "text": "胸腺"
+          },
+          {
+            "start": 50,
+            "end": 53,
+            "type": "bod",
+            "text": "染色体"
+          }
+        ],
+        "repaired_prediction": [
+          {
+            "start": 6,
+            "end": 8,
+            "type": "dru",
+            "text": "叶酸"
+          },
+          {
+            "start": 17,
+            "end": 21,
+            "type": "dru",
+            "text": "氟尿嘧啶"
+          },
+          {
+            "start": 37,
+            "end": 39,
+            "type": "bod",
+            "text": "胸腺"
+          },
+          {
+            "start": 50,
+            "end": 53,
+            "type": "bod",
+            "text": "染色体"
+          }
+        ],
+        "target": {
+          "start": 6,
+          "end": 8,
+          "type": "bod",
+          "text": "叶酸"
+        },
+        "observed_facts": "同跨度预测dru，参考bod；训练中该词有dru、bod、ite三类，原D0按全局多数类固定为dru。",
+        "attribution": "词典按表面词唯一多数类，无法表示语境类别差异，这是确定的结构限制；参考类别的临床含义/一致性仍未由专家核验。",
+        "limitations": "训练上下文近邻覆盖不足可能不触发或选错；不以改参考或硬编码本例类别掩盖问题。",
+        "evidence": {
+          "tokens": [
+            [
+              "已",
+              0,
+              1
+            ],
+            [
+              "发现",
+              1,
+              3
+            ],
+            [
+              "在",
+              3,
+              4
+            ],
+            [
+              "缺乏",
+              4,
+              6
+            ],
+            [
+              "叶酸",
+              6,
+              8
+            ],
+            [
+              "或用",
+              8,
+              10
+            ],
+            [
+              "较大",
+              10,
+              12
+            ],
+            [
+              "剂量",
+              12,
+              14
+            ],
+            [
+              "的",
+              14,
+              15
+            ],
+            [
+              "5",
+              15,
+              16
+            ],
+            [
+              "-",
+              16,
+              17
+            ],
+            [
+              "氟尿嘧啶",
+              17,
+              21
+            ],
+            [
+              "（",
+              21,
+              22
+            ],
+            [
+              "5",
+              22,
+              23
+            ],
+            [
+              "-",
+              23,
+              24
+            ],
+            [
+              "FU",
+              24,
+              26
+            ],
+            [
+              "）",
+              26,
+              27
+            ],
+            [
+              "等",
+              27,
+              28
+            ],
+            [
+              "条件",
+              28,
+              30
+            ],
+            [
+              "下",
+              30,
+              31
+            ],
+            [
+              "处理",
+              31,
+              33
+            ],
+            [
+              "，",
+              33,
+              34
+            ],
+            [
+              "可",
+              34,
+              35
+            ],
+            [
+              "致使",
+              35,
+              37
+            ],
+            [
+              "胸腺",
+              37,
+              39
+            ],
+            [
+              "核苷",
+              39,
+              41
+            ],
+            [
+              "合成",
+              41,
+              43
+            ],
+            [
+              "部分",
+              43,
+              45
+            ],
+            [
+              "受到",
+              45,
+              47
+            ],
+            [
+              "抑制",
+              47,
+              49
+            ],
+            [
+              "，",
+              49,
+              50
+            ],
+            [
+              "染色体",
+              50,
+              53
+            ],
+            [
+              "结构",
+              53,
+              55
+            ],
+            [
+              "就",
+              55,
+              56
+            ],
+            [
+              "可能",
+              56,
+              58
+            ],
+            [
+              "在",
+              58,
+              59
+            ],
+            [
+              "某些",
+              59,
+              61
+            ],
+            [
+              "特定",
+              61,
+              63
+            ],
+            [
+              "的",
+              63,
+              64
+            ],
+            [
+              "部位",
+              64,
+              66
+            ],
+            [
+              "上",
+              66,
+              67
+            ],
+            [
+              "产生",
+              67,
+              69
+            ],
+            [
+              "裂隙",
+              69,
+              71
+            ],
+            [
+              "或",
+              71,
+              72
+            ],
+            [
+              "断裂",
+              72,
+              74
+            ],
+            [
+              "。",
+              74,
+              75
+            ]
+          ],
+          "train_type_counts": {
+            "dru": 27,
+            "bod": 17,
+            "ite": 1
+          },
+          "repair_actions": []
+        },
+        "target_recovered": false,
+        "source_prediction": "runs/stage4-20261020/local-evaluation/D0/common500/predictions.jsonl",
+        "retrospective_known_case": true,
+        "original_is_real_failure": true
+      },
+      "routes": {
+        "D0": {
+          "status": "valid",
+          "entities": [
+            {
+              "start": 6,
+              "end": 8,
+              "type": "dru",
+              "text": "叶酸"
+            },
+            {
+              "start": 17,
+              "end": 21,
+              "type": "dru",
+              "text": "氟尿嘧啶"
+            },
+            {
+              "start": 37,
+              "end": 39,
+              "type": "bod",
+              "text": "胸腺"
+            },
+            {
+              "start": 50,
+              "end": 53,
+              "type": "bod",
+              "text": "染色体"
+            }
+          ],
+          "source": "frozen_stage4_replay"
+        },
+        "N0": {
+          "status": "valid",
+          "entities": [
+            {
+              "start": 22,
+              "end": 26,
+              "type": "dru",
+              "text": "5-FU"
+            },
+            {
+              "start": 37,
+              "end": 49,
+              "type": "sym",
+              "text": "胸腺核苷合成部分受到抑制"
+            },
+            {
+              "start": 50,
+              "end": 53,
+              "type": "bod",
+              "text": "染色体"
+            },
+            {
+              "start": 50,
+              "end": 74,
+              "type": "sym",
+              "text": "染色体结构就可能在某些特定的部位上产生裂隙或断裂"
+            }
+          ],
+          "source": "frozen_stage4_replay"
+        },
+        "N1": {
+          "status": "valid",
+          "entities": [
+            {
+              "start": 6,
+              "end": 8,
+              "type": "dru",
+              "text": "叶酸"
+            },
+            {
+              "start": 15,
+              "end": 21,
+              "type": "dru",
+              "text": "5-氟尿嘧啶"
+            },
+            {
+              "start": 22,
+              "end": 26,
+              "type": "dru",
+              "text": "5-FU"
+            },
+            {
+              "start": 37,
+              "end": 41,
+              "type": "bod",
+              "text": "胸腺核苷"
+            },
+            {
+              "start": 50,
+              "end": 53,
+              "type": "bod",
+              "text": "染色体"
+            }
+          ],
+          "source": "frozen_stage4_replay"
+        },
+        "L0": {
+          "status": "valid",
+          "entities": [
+            {
+              "start": 6,
+              "end": 8,
+              "type": "dru",
+              "text": "叶酸"
+            },
+            {
+              "start": 15,
+              "end": 21,
+              "type": "dru",
+              "text": "5-氟尿嘧啶"
+            },
+            {
+              "start": 22,
+              "end": 26,
+              "type": "dru",
+              "text": "5-FU"
+            },
+            {
+              "start": 37,
+              "end": 41,
+              "type": "bod",
+              "text": "胸腺核苷"
+            },
+            {
+              "start": 50,
+              "end": 53,
+              "type": "bod",
+              "text": "染色体"
+            },
+            {
+              "start": 69,
+              "end": 71,
+              "type": "sym",
+              "text": "裂隙"
+            },
+            {
+              "start": 72,
+              "end": 74,
+              "type": "sym",
+              "text": "断裂"
+            }
+          ],
+          "source": "frozen_stage4_replay",
+          "wire": {
+            "entities": [
+              {
+                "text": "叶酸",
+                "type": "dru",
+                "occurrence": 0
+              },
+              {
+                "text": "5-氟尿嘧啶",
+                "type": "dru",
+                "occurrence": 0
+              },
+              {
+                "text": "5-FU",
+                "type": "dru",
+                "occurrence": 0
+              },
+              {
+                "text": "胸腺核苷",
+                "type": "bod",
+                "occurrence": 0
+              },
+              {
+                "text": "染色体",
+                "type": "bod",
+                "occurrence": 0
+              },
+              {
+                "text": "裂隙",
+                "type": "sym",
+                "occurrence": 0
+              },
+              {
+                "text": "断裂",
+                "type": "sym",
+                "occurrence": 0
+              }
+            ]
+          }
+        },
+        "L3": {
+          "status": "valid",
+          "entities": [
+            {
+              "start": 6,
+              "end": 8,
+              "type": "dru",
+              "text": "叶酸"
+            },
+            {
+              "start": 15,
+              "end": 21,
+              "type": "dru",
+              "text": "5-氟尿嘧啶"
+            },
+            {
+              "start": 22,
+              "end": 26,
+              "type": "dru",
+              "text": "5-FU"
+            },
+            {
+              "start": 37,
+              "end": 43,
+              "type": "pro",
+              "text": "胸腺核苷合成"
+            },
+            {
+              "start": 50,
+              "end": 53,
+              "type": "bod",
+              "text": "染色体"
+            },
+            {
+              "start": 69,
+              "end": 71,
+              "type": "sym",
+              "text": "裂隙"
+            },
+            {
+              "start": 72,
+              "end": 74,
+              "type": "sym",
+              "text": "断裂"
+            }
+          ],
+          "source": "frozen_stage4_replay",
+          "wire": {
+            "entities": [
+              {
+                "text": "叶酸",
+                "type": "dru",
+                "occurrence": 0
+              },
+              {
+                "text": "5-氟尿嘧啶",
+                "type": "dru",
+                "occurrence": 0
+              },
+              {
+                "text": "5-FU",
+                "type": "dru",
+                "occurrence": 0
+              },
+              {
+                "text": "胸腺核苷合成",
+                "type": "pro",
+                "occurrence": 0
+              },
+              {
+                "text": "染色体",
+                "type": "bod",
+                "occurrence": 0
+              },
+              {
+                "text": "裂隙",
+                "type": "sym",
+                "occurrence": 0
+              },
+              {
+                "text": "断裂",
+                "type": "sym",
+                "occurrence": 0
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "case": {
+        "case_id": "F03",
+        "id": "cmeee-v2-dev-01574",
+        "category": "生成输出的原文定位契约",
+        "route": "L0",
+        "input": "至12周时，GH血浓度可达到60μg/L，30周时达130μg/L，以后GH浓度逐渐下降，出生时为30μg/L，以后进一步下降。",
+        "reference": [
+          {
+            "start": 6,
+            "end": 11,
+            "type": "ite",
+            "text": "GH血浓度"
+          },
+          {
+            "start": 36,
+            "end": 40,
+            "type": "ite",
+            "text": "GH浓度"
+          }
+        ],
+        "original_prediction": null,
+        "repaired_prediction": [
+          {
+            "start": 6,
+            "end": 8,
+            "type": "ite",
+            "text": "GH"
+          },
+          {
+            "start": 8,
+            "end": 9,
+            "type": "bod",
+            "text": "血"
+          },
+          {
+            "start": 36,
+            "end": 38,
+            "type": "ite",
+            "text": "GH"
+          }
+        ],
+        "target": null,
+        "observed_facts": "原文GH只出现两次，原响应额外给occurrence=2，原严格解析因此整条无效。",
+        "attribution": "生成模型违反原文出现次数契约；不是Unicode右开坐标实现错误。删除冗余越界项只在同词同类的所有真实位置已显式覆盖时允许。",
+        "limitations": "仅离线重解析既有付费响应，未再次调用API；仍可能类别错误。无精确原文或未覆盖位置的输出继续无效。",
+        "evidence": {
+          "tokens": [
+            [
+              "至",
+              0,
+              1
+            ],
+            [
+              "12",
+              1,
+              3
+            ],
+            [
+              "周时",
+              3,
+              5
+            ],
+            [
+              "，",
+              5,
+              6
+            ],
+            [
+              "GH",
+              6,
+              8
+            ],
+            [
+              "血",
+              8,
+              9
+            ],
+            [
+              "浓度",
+              9,
+              11
+            ],
+            [
+              "可",
+              11,
+              12
+            ],
+            [
+              "达到",
+              12,
+              14
+            ],
+            [
+              "60",
+              14,
+              16
+            ],
+            [
+              "μ",
+              16,
+              17
+            ],
+            [
+              "g",
+              17,
+              18
+            ],
+            [
+              "/",
+              18,
+              19
+            ],
+            [
+              "L",
+              19,
+              20
+            ],
+            [
+              "，",
+              20,
+              21
+            ],
+            [
+              "30",
+              21,
+              23
+            ],
+            [
+              "周时",
+              23,
+              25
+            ],
+            [
+              "达",
+              25,
+              26
+            ],
+            [
+              "130",
+              26,
+              29
+            ],
+            [
+              "μ",
+              29,
+              30
+            ],
+            [
+              "g",
+              30,
+              31
+            ],
+            [
+              "/",
+              31,
+              32
+            ],
+            [
+              "L",
+              32,
+              33
+            ],
+            [
+              "，",
+              33,
+              34
+            ],
+            [
+              "以后",
+              34,
+              36
+            ],
+            [
+              "GH",
+              36,
+              38
+            ],
+            [
+              "浓度",
+              38,
+              40
+            ],
+            [
+              "逐渐",
+              40,
+              42
+            ],
+            [
+              "下降",
+              42,
+              44
+            ],
+            [
+              "，",
+              44,
+              45
+            ],
+            [
+              "出生",
+              45,
+              47
+            ],
+            [
+              "时为",
+              47,
+              49
+            ],
+            [
+              "30",
+              49,
+              51
+            ],
+            [
+              "μ",
+              51,
+              52
+            ],
+            [
+              "g",
+              52,
+              53
+            ],
+            [
+              "/",
+              53,
+              54
+            ],
+            [
+              "L",
+              54,
+              55
+            ],
+            [
+              "，",
+              55,
+              56
+            ],
+            [
+              "以后",
+              56,
+              58
+            ],
+            [
+              "进一步",
+              58,
+              61
+            ],
+            [
+              "下降",
+              61,
+              63
+            ],
+            [
+              "。",
+              63,
+              64
+            ]
+          ],
+          "train_type_counts": null,
+          "repair_actions": [],
+          "raw_file": "runs/stage4-20261020/api-final/requests/raw-ner-final-bd3f20694a524c4fa4a69e52bdfa883b.json",
+          "wire": {
+            "entities": [
+              {
+                "text": "GH",
+                "type": "ite",
+                "occurrence": 0
+              },
+              {
+                "text": "血",
+                "type": "bod",
+                "occurrence": 0
+              },
+              {
+                "text": "GH",
+                "type": "ite",
+                "occurrence": 1
+              },
+              {
+                "text": "GH",
+                "type": "ite",
+                "occurrence": 2
+              }
+            ]
+          },
+          "api_repair_actions": [
+            {
+              "action": "drop_overflow_duplicate",
+              "index": 3,
+              "entity": {
+                "text": "GH",
+                "type": "ite",
+                "occurrence": 2
+              },
+              "actual_occurrences": 2
+            }
+          ],
+          "exact_GH_positions": [
+            6,
+            36
+          ]
+        },
+        "target_recovered": null,
+        "source_prediction": "runs/stage4-20261020/api-final/requests/raw-ner-final-bd3f20694a524c4fa4a69e52bdfa883b.json",
+        "retrospective_known_case": true,
+        "original_is_real_failure": true
+      },
+      "routes": {
+        "D0": {
+          "status": "valid",
+          "entities": [
+            {
+              "start": 6,
+              "end": 8,
+              "type": "ite",
+              "text": "GH"
+            },
+            {
+              "start": 8,
+              "end": 9,
+              "type": "bod",
+              "text": "血"
+            },
+            {
+              "start": 8,
+              "end": 11,
+              "type": "ite",
+              "text": "血浓度"
+            },
+            {
+              "start": 36,
+              "end": 38,
+              "type": "ite",
+              "text": "GH"
+            }
+          ],
+          "source": "frozen_stage4_replay"
+        },
+        "N0": {
+          "status": "valid",
+          "entities": [
+            {
+              "start": 6,
+              "end": 11,
+              "type": "ite",
+              "text": "GH血浓度"
+            },
+            {
+              "start": 36,
+              "end": 40,
+              "type": "ite",
+              "text": "GH浓度"
+            }
+          ],
+          "source": "frozen_stage4_replay"
+        },
+        "N1": {
+          "status": "valid",
+          "entities": [
+            {
+              "start": 6,
+              "end": 11,
+              "type": "ite",
+              "text": "GH血浓度"
+            },
+            {
+              "start": 6,
+              "end": 20,
+              "type": "sym",
+              "text": "GH血浓度可达到60μg/L"
+            },
+            {
+              "start": 36,
+              "end": 40,
+              "type": "ite",
+              "text": "GH浓度"
+            }
+          ],
+          "source": "frozen_stage4_replay"
+        },
+        "L0": {
+          "status": "invalid",
+          "entities": null,
+          "source": "frozen_stage4_replay",
+          "wire": {
+            "entities": [
+              {
+                "text": "GH",
+                "type": "ite",
+                "occurrence": 0
+              },
+              {
+                "text": "血",
+                "type": "bod",
+                "occurrence": 0
+              },
+              {
+                "text": "GH",
+                "type": "ite",
+                "occurrence": 1
+              },
+              {
+                "text": "GH",
+                "type": "ite",
+                "occurrence": 2
+              }
+            ]
+          }
+        },
+        "L3": {
+          "status": "valid",
+          "entities": [
+            {
+              "start": 6,
+              "end": 8,
+              "type": "ite",
+              "text": "GH"
+            },
+            {
+              "start": 36,
+              "end": 38,
+              "type": "ite",
+              "text": "GH"
+            }
+          ],
+          "source": "frozen_stage4_replay",
+          "wire": {
+            "entities": [
+              {
+                "text": "GH",
+                "type": "ite",
+                "occurrence": 0
+              },
+              {
+                "text": "GH",
+                "type": "ite",
+                "occurrence": 1
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "case": {
+        "case_id": "F04",
+        "id": "cmeee-v2-dev-00004",
+        "category": "跨度边界过度延长",
+        "route": "N1",
+        "input": "（二）临床症状、体征与成年人类似，起病急，主要表现为发热和咳嗽，热峰高，腋温多在39℃以上，发热持续时间平均超过一周。",
+        "reference": [
+          {
+            "start": 26,
+            "end": 28,
+            "type": "sym",
+            "text": "发热"
+          },
+          {
+            "start": 29,
+            "end": 31,
+            "type": "sym",
+            "text": "咳嗽"
+          },
+          {
+            "start": 32,
+            "end": 35,
+            "type": "sym",
+            "text": "热峰高"
+          },
+          {
+            "start": 36,
+            "end": 45,
+            "type": "sym",
+            "text": "腋温多在39℃以上"
+          },
+          {
+            "start": 36,
+            "end": 38,
+            "type": "ite",
+            "text": "腋温"
+          },
+          {
+            "start": 46,
+            "end": 48,
+            "type": "sym",
+            "text": "发热"
+          }
+        ],
+        "original_prediction": [
+          {
+            "start": 26,
+            "end": 28,
+            "type": "sym",
+            "text": "发热"
+          },
+          {
+            "start": 29,
+            "end": 31,
+            "type": "sym",
+            "text": "咳嗽"
+          },
+          {
+            "start": 32,
+            "end": 35,
+            "type": "sym",
+            "text": "热峰高"
+          },
+          {
+            "start": 36,
+            "end": 45,
+            "type": "sym",
+            "text": "腋温多在39℃以上"
+          },
+          {
+            "start": 46,
+            "end": 58,
+            "type": "sym",
+            "text": "发热持续时间平均超过一周"
+          }
+        ],
+        "repaired_prediction": [
+          {
+            "start": 26,
+            "end": 28,
+            "type": "sym",
+            "text": "发热"
+          },
+          {
+            "start": 29,
+            "end": 31,
+            "type": "sym",
+            "text": "咳嗽"
+          },
+          {
+            "start": 32,
+            "end": 35,
+            "type": "sym",
+            "text": "热峰高"
+          },
+          {
+            "start": 36,
+            "end": 45,
+            "type": "sym",
+            "text": "腋温多在39℃以上"
+          },
+          {
+            "start": 46,
+            "end": 58,
+            "type": "sym",
+            "text": "发热持续时间平均超过一周"
+          }
+        ],
+        "target": {
+          "start": 46,
+          "end": 48,
+          "type": "sym",
+          "text": "发热"
+        },
+        "observed_facts": "参考为[46,48)发热；N1输出[46,58)发热持续时间平均超过一周，严格边界不符。全文短于256字符，排除窗口未覆盖。",
+        "attribution": "可确认跨度决策失配；长修饰语导致过度延展只是机制假设，无法由单例确定。",
+        "limitations": "本轮词典与API补丁不修改N1；未修复。需新的训练/解码开发实验，不把宽松指标算成成功。",
+        "evidence": {
+          "tokens": [
+            [
+              "（",
+              0,
+              1
+            ],
+            [
+              "二",
+              1,
+              2
+            ],
+            [
+              "）",
+              2,
+              3
+            ],
+            [
+              "临床",
+              3,
+              5
+            ],
+            [
+              "症状",
+              5,
+              7
+            ],
+            [
+              "、",
+              7,
+              8
+            ],
+            [
+              "体征",
+              8,
+              10
+            ],
+            [
+              "与",
+              10,
+              11
+            ],
+            [
+              "成年人",
+              11,
+              14
+            ],
+            [
+              "类似",
+              14,
+              16
+            ],
+            [
+              "，",
+              16,
+              17
+            ],
+            [
+              "起病",
+              17,
+              19
+            ],
+            [
+              "急",
+              19,
+              20
+            ],
+            [
+              "，",
+              20,
+              21
+            ],
+            [
+              "主要",
+              21,
+              23
+            ],
+            [
+              "表现",
+              23,
+              25
+            ],
+            [
+              "为",
+              25,
+              26
+            ],
+            [
+              "发热",
+              26,
+              28
+            ],
+            [
+              "和",
+              28,
+              29
+            ],
+            [
+              "咳嗽",
+              29,
+              31
+            ],
+            [
+              "，",
+              31,
+              32
+            ],
+            [
+              "热",
+              32,
+              33
+            ],
+            [
+              "峰高",
+              33,
+              35
+            ],
+            [
+              "，",
+              35,
+              36
+            ],
+            [
+              "腋温",
+              36,
+              38
+            ],
+            [
+              "多",
+              38,
+              39
+            ],
+            [
+              "在",
+              39,
+              40
+            ],
+            [
+              "39",
+              40,
+              42
+            ],
+            [
+              "℃",
+              42,
+              43
+            ],
+            [
+              "以上",
+              43,
+              45
+            ],
+            [
+              "，",
+              45,
+              46
+            ],
+            [
+              "发热",
+              46,
+              48
+            ],
+            [
+              "持续时间",
+              48,
+              52
+            ],
+            [
+              "平均",
+              52,
+              54
+            ],
+            [
+              "超过",
+              54,
+              56
+            ],
+            [
+              "一周",
+              56,
+              58
+            ],
+            [
+              "。",
+              58,
+              59
+            ]
+          ],
+          "train_type_counts": {
+            "sym": 167
+          },
+          "repair_actions": [],
+          "same_type_overlapping_predictions": [
+            {
+              "start": 46,
+              "end": 58,
+              "type": "sym",
+              "text": "发热持续时间平均超过一周"
+            }
+          ],
+          "window_chars": 256,
+          "text_chars": 59,
+          "all_text_within_one_window": true
+        },
+        "target_recovered": false,
+        "source_prediction": "runs/stage4-20261020/local-evaluation/N1-seed20261019/common500/predictions.jsonl",
+        "retrospective_known_case": true,
+        "original_is_real_failure": true
+      },
+      "routes": {
+        "D0": {
+          "status": "valid",
+          "entities": [
+            {
+              "start": 3,
+              "end": 5,
+              "type": "dep",
+              "text": "临床"
+            },
+            {
+              "start": 8,
+              "end": 10,
+              "type": "pro",
+              "text": "体征"
+            },
+            {
+              "start": 17,
+              "end": 20,
+              "type": "sym",
+              "text": "起病急"
+            },
+            {
+              "start": 26,
+              "end": 28,
+              "type": "sym",
+              "text": "发热"
+            },
+            {
+              "start": 29,
+              "end": 31,
+              "type": "sym",
+              "text": "咳嗽"
+            },
+            {
+              "start": 32,
+              "end": 33,
+              "type": "sym",
+              "text": "热"
+            },
+            {
+              "start": 46,
+              "end": 48,
+              "type": "sym",
+              "text": "发热"
+            }
+          ],
+          "source": "frozen_stage4_replay"
+        },
+        "N0": {
+          "status": "valid",
+          "entities": [
+            {
+              "start": 26,
+              "end": 28,
+              "type": "sym",
+              "text": "发热"
+            },
+            {
+              "start": 29,
+              "end": 31,
+              "type": "sym",
+              "text": "咳嗽"
+            },
+            {
+              "start": 32,
+              "end": 35,
+              "type": "sym",
+              "text": "热峰高"
+            },
+            {
+              "start": 36,
+              "end": 43,
+              "type": "sym",
+              "text": "腋温多在39℃"
+            },
+            {
+              "start": 36,
+              "end": 45,
+              "type": "sym",
+              "text": "腋温多在39℃以上"
+            },
+            {
+              "start": 46,
+              "end": 48,
+              "type": "sym",
+              "text": "发热"
+            }
+          ],
+          "source": "frozen_stage4_replay"
+        },
+        "N1": {
+          "status": "valid",
+          "entities": [
+            {
+              "start": 26,
+              "end": 28,
+              "type": "sym",
+              "text": "发热"
+            },
+            {
+              "start": 29,
+              "end": 31,
+              "type": "sym",
+              "text": "咳嗽"
+            },
+            {
+              "start": 32,
+              "end": 35,
+              "type": "sym",
+              "text": "热峰高"
+            },
+            {
+              "start": 36,
+              "end": 45,
+              "type": "sym",
+              "text": "腋温多在39℃以上"
+            },
+            {
+              "start": 46,
+              "end": 58,
+              "type": "sym",
+              "text": "发热持续时间平均超过一周"
+            }
+          ],
+          "source": "frozen_stage4_replay"
+        },
+        "L0": {
+          "status": "valid",
+          "entities": [
+            {
+              "start": 5,
+              "end": 7,
+              "type": "sym",
+              "text": "症状"
+            },
+            {
+              "start": 8,
+              "end": 10,
+              "type": "sym",
+              "text": "体征"
+            },
+            {
+              "start": 17,
+              "end": 20,
+              "type": "sym",
+              "text": "起病急"
+            },
+            {
+              "start": 26,
+              "end": 28,
+              "type": "sym",
+              "text": "发热"
+            },
+            {
+              "start": 29,
+              "end": 31,
+              "type": "sym",
+              "text": "咳嗽"
+            },
+            {
+              "start": 32,
+              "end": 35,
+              "type": "sym",
+              "text": "热峰高"
+            },
+            {
+              "start": 36,
+              "end": 45,
+              "type": "sym",
+              "text": "腋温多在39℃以上"
+            },
+            {
+              "start": 46,
+              "end": 58,
+              "type": "sym",
+              "text": "发热持续时间平均超过一周"
+            }
+          ],
+          "source": "frozen_stage4_replay",
+          "wire": {
+            "entities": [
+              {
+                "text": "症状",
+                "type": "sym",
+                "occurrence": 0
+              },
+              {
+                "text": "体征",
+                "type": "sym",
+                "occurrence": 0
+              },
+              {
+                "text": "起病急",
+                "type": "sym",
+                "occurrence": 0
+              },
+              {
+                "text": "发热",
+                "type": "sym",
+                "occurrence": 0
+              },
+              {
+                "text": "咳嗽",
+                "type": "sym",
+                "occurrence": 0
+              },
+              {
+                "text": "热峰高",
+                "type": "sym",
+                "occurrence": 0
+              },
+              {
+                "text": "腋温多在39℃以上",
+                "type": "sym",
+                "occurrence": 0
+              },
+              {
+                "text": "发热持续时间平均超过一周",
+                "type": "sym",
+                "occurrence": 0
+              }
+            ]
+          }
+        },
+        "L3": {
+          "status": "valid",
+          "entities": [
+            {
+              "start": 3,
+              "end": 7,
+              "type": "sym",
+              "text": "临床症状"
+            },
+            {
+              "start": 8,
+              "end": 10,
+              "type": "sym",
+              "text": "体征"
+            },
+            {
+              "start": 26,
+              "end": 28,
+              "type": "sym",
+              "text": "发热"
+            },
+            {
+              "start": 29,
+              "end": 31,
+              "type": "sym",
+              "text": "咳嗽"
+            },
+            {
+              "start": 32,
+              "end": 35,
+              "type": "sym",
+              "text": "热峰高"
+            },
+            {
+              "start": 36,
+              "end": 45,
+              "type": "sym",
+              "text": "腋温多在39℃以上"
+            },
+            {
+              "start": 46,
+              "end": 48,
+              "type": "sym",
+              "text": "发热"
+            }
+          ],
+          "source": "frozen_stage4_replay",
+          "wire": {
+            "entities": [
+              {
+                "text": "临床症状",
+                "type": "sym",
+                "occurrence": 0
+              },
+              {
+                "text": "体征",
+                "type": "sym",
+                "occurrence": 0
+              },
+              {
+                "text": "发热",
+                "type": "sym",
+                "occurrence": 0
+              },
+              {
+                "text": "咳嗽",
+                "type": "sym",
+                "occurrence": 0
+              },
+              {
+                "text": "热峰高",
+                "type": "sym",
+                "occurrence": 0
+              },
+              {
+                "text": "腋温多在39℃以上",
+                "type": "sym",
+                "occurrence": 0
+              },
+              {
+                "text": "发热",
+                "type": "sym",
+                "occurrence": 1
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "case": {
+        "case_id": "F05",
+        "id": "cmeee-v2-dev-00022",
+        "category": "训练词表覆盖不足",
+        "route": "D0",
+        "input": "SARS患儿有部分出现心脏损害，对有心脏损害者应进行床边动态心电监护。",
+        "reference": [
+          {
+            "start": 0,
+            "end": 4,
+            "type": "dis",
+            "text": "SARS"
+          },
+          {
+            "start": 11,
+            "end": 13,
+            "type": "bod",
+            "text": "心脏"
+          },
+          {
+            "start": 11,
+            "end": 15,
+            "type": "sym",
+            "text": "心脏损害"
+          },
+          {
+            "start": 18,
+            "end": 20,
+            "type": "bod",
+            "text": "心脏"
+          },
+          {
+            "start": 18,
+            "end": 22,
+            "type": "sym",
+            "text": "心脏损害"
+          },
+          {
+            "start": 26,
+            "end": 34,
+            "type": "pro",
+            "text": "床边动态心电监护"
+          }
+        ],
+        "original_prediction": [
+          {
+            "start": 11,
+            "end": 13,
+            "type": "bod",
+            "text": "心脏"
+          },
+          {
+            "start": 11,
+            "end": 15,
+            "type": "dis",
+            "text": "心脏损害"
+          },
+          {
+            "start": 13,
+            "end": 15,
+            "type": "dis",
+            "text": "损害"
+          },
+          {
+            "start": 18,
+            "end": 20,
+            "type": "bod",
+            "text": "心脏"
+          },
+          {
+            "start": 18,
+            "end": 22,
+            "type": "dis",
+            "text": "心脏损害"
+          },
+          {
+            "start": 20,
+            "end": 22,
+            "type": "dis",
+            "text": "损害"
+          }
+        ],
+        "repaired_prediction": [
+          {
+            "start": 11,
+            "end": 13,
+            "type": "bod",
+            "text": "心脏"
+          },
+          {
+            "start": 11,
+            "end": 15,
+            "type": "dis",
+            "text": "心脏损害"
+          },
+          {
+            "start": 13,
+            "end": 15,
+            "type": "dis",
+            "text": "损害"
+          },
+          {
+            "start": 18,
+            "end": 20,
+            "type": "bod",
+            "text": "心脏"
+          },
+          {
+            "start": 18,
+            "end": 22,
+            "type": "dis",
+            "text": "心脏损害"
+          },
+          {
+            "start": 20,
+            "end": 22,
+            "type": "dis",
+            "text": "损害"
+          }
+        ],
+        "target": {
+          "start": 0,
+          "end": 4,
+          "type": "dis",
+          "text": "SARS"
+        },
+        "observed_facts": "训练实体词表不含SARS；D0只精确枚举训练实体，无法产生该候选。",
+        "attribution": "训练实体词表覆盖不足是该词典路线的确定性召回上限；不代表N1或预训练模型未见过该词。",
+        "limitations": "本轮补丁不注入留出实体或参考，仍漏检；N1历史预测检出只作路线能力对照，不冒充本轮新推理。",
+        "evidence": {
+          "tokens": [
+            [
+              "SARS",
+              0,
+              4
+            ],
+            [
+              "患儿",
+              4,
+              6
+            ],
+            [
+              "有",
+              6,
+              7
+            ],
+            [
+              "部分",
+              7,
+              9
+            ],
+            [
+              "出现",
+              9,
+              11
+            ],
+            [
+              "心脏",
+              11,
+              13
+            ],
+            [
+              "损害",
+              13,
+              15
+            ],
+            [
+              "，",
+              15,
+              16
+            ],
+            [
+              "对",
+              16,
+              17
+            ],
+            [
+              "有",
+              17,
+              18
+            ],
+            [
+              "心脏",
+              18,
+              20
+            ],
+            [
+              "损害",
+              20,
+              22
+            ],
+            [
+              "者",
+              22,
+              23
+            ],
+            [
+              "应",
+              23,
+              24
+            ],
+            [
+              "进行",
+              24,
+              26
+            ],
+            [
+              "床边",
+              26,
+              28
+            ],
+            [
+              "动态",
+              28,
+              30
+            ],
+            [
+              "心电监护",
+              30,
+              34
+            ],
+            [
+              "。",
+              34,
+              35
+            ]
+          ],
+          "train_type_counts": {},
+          "repair_actions": [],
+          "in_training_dictionary": false
+        },
+        "target_recovered": false,
+        "source_prediction": "runs/stage4-20261020/local-evaluation/D0/common500/predictions.jsonl",
+        "retrospective_known_case": true,
+        "original_is_real_failure": true
+      },
+      "routes": {
+        "D0": {
+          "status": "valid",
+          "entities": [
+            {
+              "start": 11,
+              "end": 13,
+              "type": "bod",
+              "text": "心脏"
+            },
+            {
+              "start": 11,
+              "end": 15,
+              "type": "dis",
+              "text": "心脏损害"
+            },
+            {
+              "start": 13,
+              "end": 15,
+              "type": "dis",
+              "text": "损害"
+            },
+            {
+              "start": 18,
+              "end": 20,
+              "type": "bod",
+              "text": "心脏"
+            },
+            {
+              "start": 18,
+              "end": 22,
+              "type": "dis",
+              "text": "心脏损害"
+            },
+            {
+              "start": 20,
+              "end": 22,
+              "type": "dis",
+              "text": "损害"
+            }
+          ],
+          "source": "frozen_stage4_replay"
+        },
+        "N0": {
+          "status": "valid",
+          "entities": [
+            {
+              "start": 0,
+              "end": 4,
+              "type": "dis",
+              "text": "SARS"
+            },
+            {
+              "start": 11,
+              "end": 15,
+              "type": "dis",
+              "text": "心脏损害"
+            },
+            {
+              "start": 18,
+              "end": 22,
+              "type": "dis",
+              "text": "心脏损害"
+            },
+            {
+              "start": 28,
+              "end": 34,
+              "type": "pro",
+              "text": "动态心电监护"
+            },
+            {
+              "start": 30,
+              "end": 34,
+              "type": "pro",
+              "text": "心电监护"
+            }
+          ],
+          "source": "frozen_stage4_replay"
+        },
+        "N1": {
+          "status": "valid",
+          "entities": [
+            {
+              "start": 0,
+              "end": 4,
+              "type": "dis",
+              "text": "SARS"
+            },
+            {
+              "start": 11,
+              "end": 15,
+              "type": "dis",
+              "text": "心脏损害"
+            },
+            {
+              "start": 18,
+              "end": 22,
+              "type": "dis",
+              "text": "心脏损害"
+            },
+            {
+              "start": 26,
+              "end": 34,
+              "type": "pro",
+              "text": "床边动态心电监护"
+            }
+          ],
+          "source": "frozen_stage4_replay"
+        },
+        "L0": {
+          "status": "valid",
+          "entities": [
+            {
+              "start": 0,
+              "end": 4,
+              "type": "dis",
+              "text": "SARS"
+            },
+            {
+              "start": 11,
+              "end": 15,
+              "type": "dis",
+              "text": "心脏损害"
+            },
+            {
+              "start": 11,
+              "end": 13,
+              "type": "bod",
+              "text": "心脏"
+            },
+            {
+              "start": 18,
+              "end": 22,
+              "type": "dis",
+              "text": "心脏损害"
+            },
+            {
+              "start": 18,
+              "end": 20,
+              "type": "bod",
+              "text": "心脏"
+            },
+            {
+              "start": 26,
+              "end": 34,
+              "type": "pro",
+              "text": "床边动态心电监护"
+            }
+          ],
+          "source": "frozen_stage4_replay",
+          "wire": {
+            "entities": [
+              {
+                "text": "SARS",
+                "type": "dis",
+                "occurrence": 0
+              },
+              {
+                "text": "心脏损害",
+                "type": "dis",
+                "occurrence": 0
+              },
+              {
+                "text": "心脏",
+                "type": "bod",
+                "occurrence": 0
+              },
+              {
+                "text": "心脏损害",
+                "type": "dis",
+                "occurrence": 1
+              },
+              {
+                "text": "心脏",
+                "type": "bod",
+                "occurrence": 1
+              },
+              {
+                "text": "床边动态心电监护",
+                "type": "pro",
+                "occurrence": 0
+              }
+            ]
+          }
+        },
+        "L3": {
+          "status": "valid",
+          "entities": [
+            {
+              "start": 0,
+              "end": 4,
+              "type": "dis",
+              "text": "SARS"
+            },
+            {
+              "start": 11,
+              "end": 15,
+              "type": "dis",
+              "text": "心脏损害"
+            },
+            {
+              "start": 18,
+              "end": 22,
+              "type": "dis",
+              "text": "心脏损害"
+            },
+            {
+              "start": 30,
+              "end": 34,
+              "type": "pro",
+              "text": "心电监护"
+            }
+          ],
+          "source": "frozen_stage4_replay",
+          "wire": {
+            "entities": [
+              {
+                "text": "SARS",
+                "type": "dis",
+                "occurrence": 0
+              },
+              {
+                "text": "心脏损害",
+                "type": "dis",
+                "occurrence": 0
+              },
+              {
+                "text": "心脏损害",
+                "type": "dis",
+                "occurrence": 1
+              },
+              {
+                "text": "心电监护",
+                "type": "pro",
+                "occurrence": 0
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
