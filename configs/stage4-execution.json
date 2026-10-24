@@ -1,0 +1,111 @@
+{
+  "stage": 4,
+  "created_at": "2026-10-20T01:08:23.334498+00:00",
+  "authorization": "configs/qha-stage4-contract.json",
+  "frozen_development_protocol": "configs/stage4-frozen-protocol.json",
+  "protocol_unchanged": true,
+  "run_root": "runs/stage4-20261020",
+  "training": {
+    "new_seeds": [
+      20261020,
+      20261021
+    ],
+    "methods": [
+      "N0",
+      "N1"
+    ],
+    "order": [
+      "N1-seed20261020",
+      "N1-seed20261021",
+      "N0-seed20261020",
+      "N0-seed20261021"
+    ],
+    "seed19_reused": true,
+    "source_epoch_loop_check": "evidence/stage4/training-source-check.json",
+    "final_metrics_cannot_change_training": true
+  },
+  "evaluation": {
+    "start_after_all_training_complete": true,
+    "primary_seed": 20261019,
+    "all_model_seeds": [
+      20261019,
+      20261020,
+      20261021
+    ],
+    "local_main": "full5000 frozen batch4 inference;common500 exact ID subset",
+    "single_sample_latency": "separate500 fixedsamples with all own windows;loading excluded,firstincluded;diagnostic differences never replace main outputs",
+    "API": "L0thenL3 each500,same frozenwire/prompt/examples;noautomaticretry",
+    "no_best_final_seed_selection": true,
+    "no_holdout_tuning": true
+  },
+  "audit": {
+    "final_evaluation_authorized": true,
+    "protocol": "configs/stage4-frozen-protocol.json",
+    "protocol_sha256": "72d03e43cba5d594ddf7fdf26895b7deff8d44a5c47510ce309cf9fb428d106f",
+    "gold": {
+      "common500": "data/sealed/common500.jsonl",
+      "holdout5000": "data/sealed/holdout.jsonl"
+    },
+    "train": "data/processed/train.jsonl",
+    "local_manifest": "runs/stage4-20261020/local-evaluation/manifest.json",
+    "api_run_dir": "runs/stage4-20261020/api-final",
+    "primary_seed": 20261019,
+    "bootstrap": {
+      "replicates": 2000,
+      "seed": 20261019,
+      "confidence": 0.95
+    },
+    "opening_ledger": "private/budget/stage4-opening-ledger.json",
+    "checkpoint_inspection": "evidence/stage4/checkpoint-inspection.json",
+    "exit_resource_report": "evidence/stage4/post-run-gpu.json",
+    "pre_evaluation_files": {
+      "configs/stage4-frozen-protocol.json": "72d03e43cba5d594ddf7fdf26895b7deff8d44a5c47510ce309cf9fb428d106f",
+      "configs/qha-stage4-contract.json": "8c56c066dcef1695a6a90c52ea84c79eeb6c7c8ac407c00f6cc649a686cabaaf",
+      "data/manifests/readiness.json": "0a3523555bc64a57e86a4e30668d3f5444c3df8de7ebd65cc4eb24aba48d1333",
+      "data/processed/train.jsonl": "5210ef07e22fa80d2ff1226bf7c8e8e8f4be8290c6d3d97b809528214bc8faa0",
+      "data/processed/dev.jsonl": "9721b812f698a333b33e55541dfc3f29df5dd0df1dbbb20acdf92871e2f46155",
+      "data/sealed/common500.jsonl": "a293029fe31fcc04edc6b2aed8faefe399b87a9b0114a449e39008d08e013f47",
+      "data/sealed/holdout.jsonl": "a2ae73ae607f2e3b401a63feb74b1912d1e1f1b9e47cd55f64e682e2b7a66b2f",
+      "runs/stage3-20261019/N0/summary.json": "6249e886f6f09c30173c5fc3fbf886e111f1b062249fe2b38d4f35285ae73e8e",
+      "runs/stage3-20261019/N1-lr-5e-05/summary.json": "00e4949215da0e5ea9dde021e7026b7e12e15c10a36857ff3e04dc3eb9a7335f",
+      "runs/stage3-20261019/api-development-grounded/train-examples.jsonl": "88e338b2038e852388f764e462697472cddc2517d5b716e6e717d3ac01978a69",
+      "runs/stage4-20261020/api-final/protocol-at-call.json": "7c0a0f3d2d26ea7c95f16fea91e5d75ced5769eae73d151b7a2fe4ff3bdc2250",
+      "runs/stage4-20261020/api-final/privacy-review.json": "ec6e4485d07b8db02817f5fad6239c576e7e104002660460de7c53a52f6fa7a7",
+      "scripts/ner_core.py": "3959aded96c3a3942c51bf69b0ba1b1ba21b71ec66650125340a9ab8b06cbfcc",
+      "scripts/ner_model.py": "8bddb3097a854cbca9ea5d60512f9647cd3ce6d45980b0fea5d083afbc328b4a",
+      "scripts/ner.py": "22c690ec72b14cd94510a529fed385e445ba592dbf87a27e0084f3d5506db727",
+      "scripts/stage3_common.py": "c04c288ed05f7fab1dcac32caa778376af6850870ea59c10411b768ed905a8bc",
+      "scripts/train_development.py": "00b39e3148ab71e8e9ccc056150ca928d52671963823c4861c1ce04716e38248",
+      "scripts/train_stage4.py": "25967edf050b92477b5f17ad6a448cf79f6d2ed106873ae5731a0d27621f49d1",
+      "scripts/stage4_queue.py": "bbbf1915decde06b3dd90fc8fe74b34eaa145fbdcc81597e1921bf9b4431fb1d",
+      "scripts/local_evaluate_stage4.py": "daae9c58ccbecaaf6cbcc32708fc48f231c98c13656b2707c21d166187a2c364",
+      "scripts/dictionary_evaluate_stage4.py": "3bb703730aa3e84ee7cb725ac8a2c048f31938a56ec75eef98b1fefcacda7403",
+      "scripts/local_evaluation_queue_stage4.py": "2c472bdecef559c7c24f1f29957921e79fb5d096054c84d4dabf9e009eb8553f",
+      "scripts/api_final.py": "0a1a4fec2ba14b5e59ba221b94c39ed959cdecaa4ead73d87bf0a3651f8c8b37"
+    },
+    "required_evidence": [
+      "evidence/stage4/authorization.json",
+      "evidence/stage4/training-source-check.json",
+      "evidence/stage4/training-queue.json",
+      "evidence/stage4/local-evaluation-queue.json",
+      "evidence/stage4/checkpoint-inspection.json",
+      "evidence/stage4/environment-local.json",
+      "evidence/stage4/environment-remote.json",
+      "runs/stage4-20261020/api-final/protocol-at-call.json",
+      "runs/stage4-20261020/api-final/privacy-review.json"
+    ]
+  },
+  "teaching_roles": {
+    "Wu": "吴皓睿:模型/训练/恢复/推理/工程复现",
+    "Zhou": "周栩乐:数据/基线/指标/对照/错误/许可",
+    "target_percent": [
+      50,
+      50
+    ],
+    "fallback_percent": [
+      52,
+      48
+    ],
+    "actual_AI": "Actual agent actions logged separately;teacher simulated exemplar,AppendixII disclosure;no human signatures or hours asserted"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "stage": 4,
+  "authorization": "explicit_user_stage4_2026-10-20",
+  "authorized_at": "2026-10-20T00:57:22.673524+00:00",
+  "authorization_request": "继续执行阶段四，GPU7单卡补齐两个种子；冻结协议五路线共同500及本地5000公平评估；等待占用；累计不超过100元；保留日志耗时、双人角色及AI使用。",
+  "target_instance": "qha40gpu-2",
+  "runtime_mode": "sequential_single_gpu_fp32",
+  "dataset": "CMeEE-V2 frozen data",
+  "split": [
+    "processed/train",
+    "processed/dev",
+    "sealed/common500",
+    "sealed/holdout"
+  ],
+  "train_or_validation_or_test": "train/dev for remaining seeds;frozen final evaluation only after own dev selection",
+  "checkpoint_source": "N0 fixed seeded random,N1 pinned official BERT;seed19 reuse selected stage3 best",
+  "output_dir": "/nfsdata_a40/cyf/codes/CT/cmeee_ner/runs/stage4-20261020",
+  "run_root": "runs/stage4-20261020",
+  "evidence_root": "evidence/stage4",
+  "frozen_protocol_sha256": "72d03e43cba5d594ddf7fdf26895b7deff8d44a5c47510ce309cf9fb428d106f",
+  "frozen_protocol": "configs/stage4-frozen-protocol.json",
+  "final_holdout_authorized": true,
+  "explicit_final_api_authorized": true,
+  "gpu_uuid": "GPU-f77a1700-de70-05d2-048f-18c8f9aa5974",
+  "authorized_gpu_uuids": [
+    "GPU-f77a1700-de70-05d2-048f-18c8f9aa5974"
+  ],
+  "continuous_run_budget": 84600,
+  "allowed_actions": [
+    "train N0/N1 seeds20261020/21",
+    "reuse seed19",
+    "frozen final local common500/full5000 all3seeds",
+    "L0/L3 exact frozen same500 at officialAPI",
+    "CPU independent metrics,paired document bootstrap,report evidence"
+  ],
+  "forbidden_actions": [
+    "other GPUs",
+    "foreign process changes",
+    "holdout tuning",
+    "best seed search",
+    "changing sealed data/gold",
+    "automatic API retries",
+    "finalPDF/ZIP/stage5 UI"
+  ],
+  "resource_gate": "fresh UUID7/no foreign compute PIDs/memory<=128MiB/diskheadroom/projectisolation",
+  "critical_source_sha256": {
+    "ner_core.py": "3959aded96c3a3942c51bf69b0ba1b1ba21b71ec66650125340a9ab8b06cbfcc",
+    "ner_model.py": "8bddb3097a854cbca9ea5d60512f9647cd3ce6d45980b0fea5d083afbc328b4a",
+    "ner.py": "22c690ec72b14cd94510a529fed385e445ba592dbf87a27e0084f3d5506db727",
+    "train_development.py": "00b39e3148ab71e8e9ccc056150ca928d52671963823c4861c1ce04716e38248",
+    "stage3_common.py": "c04c288ed05f7fab1dcac32caa778376af6850870ea59c10411b768ed905a8bc"
+  },
+  "seeds": [
+    20261019,
+    20261020,
+    20261021
+  ],
+  "primary_seed": 20261019,
+  "precision": "fp32;noAMP;noTF32",
+  "micro_batch": 4,
+  "accumulation": 8,
+  "expected_training_GPU_hours": [
+    1.7,
+    2.2
+  ],
+  "estimated_total_GPU_hours_with_evaluation": [
+    2.0,
+    2.9
+  ],
+  "api_budget_cny": "100",
+  "api_opening_cny": "3.872064",
+  "api_new_soft_subcap_cny": "80",
+  "api_max_new_calls": 1000,
+  "no_automatic_retries": true,
+  "no_new_automation": true,
+  "role_policy": "docs/示范角色与AI制作边界.md;teacher simulated exemplar,AppendixII full actual AI scope"
+}
