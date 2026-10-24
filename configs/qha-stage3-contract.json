@@ -1,0 +1,14 @@
+{
+ "target_instance":"qha40gpu-2","runtime_mode":"sequential_single_gpu_fp32_development",
+ "dataset":"frozen CMeEE-V2","split":"data/processed train13497/dev1503 only",
+ "train_or_validation_or_test":"training and internal development, diagnostic tiny overfit",
+ "checkpoint_source":"diagnostic own stage2; formal N0 random and N1 pinned official BERT",
+ "output_dir":"/nfsdata_a40/cyf/codes/CT/cmeee_ner/runs/stage3-20261019",
+ "authorized_gpu_uuids":["GPU-f77a1700-de70-05d2-048f-18c8f9aa5974"],
+ "continuous_run_budget":"each child at most23h30m including closure; no automatic over-budget continuation",
+ "allowed_actions":["CPU prior evidence audit","N1 train-only diagnostic","full training with internal dev early stop","three LR candidates","selected LR RoPE off","D0 jieba boundary comparison","data/metric diagnostic","checkpoint and logs"],
+ "forbidden_actions":["sealed content evaluation or tuning","other GPUs","interference with other processes","instance lifecycle changes","automatic paid API calls"],
+ "resource_gate":"setup CPU allowed; GPU requires fresh UUID/no foreign compute PID/memory/storage PASS",
+ "project_size_limit_gb":50,"min_disk_free_gb":20,
+ "api_total_limit_cny":"100","opening_estimate_cny":"3.792488","api_enabled":false
+}

@@ -1,0 +1,69 @@
+{
+  "status": "planned_not_executed",
+  "recorded_at": "2026-10-19T16:48:35.012612+00:00",
+  "authorization": "user asked higher GPU utilization after stage3 interruption;no final evaluation or stage4 training authorized",
+  "gpu_uuid": "GPU-f77a1700-de70-05d2-048f-18c8f9aa5974",
+  "budget_seconds": 110,
+  "estimated_N1_job_seconds": 2200,
+  "budget_rule": "min900s,5pct estimated job;external queue waiting separate",
+  "checkpoint": "runs/stage3-20261019/N1-lr-5e-05/best.pt",
+  "data": "processed train windows in frozen seeded order;internal dev only for real-cycle confirmation",
+  "frozen": {
+    "precision": "fp32",
+    "amp": false,
+    "tf32": false,
+    "micro_batch": 4,
+    "accumulation": 8,
+    "effective_batch": 32,
+    "seed": 20261019,
+    "gradient_clip_norm": 1,
+    "optimizer": "same AdamW groups and state",
+    "dropout_and_sample_order": "preserve exact microbatch shapes/order and RNG states"
+  },
+  "ordered_candidates": [
+    "original training loop baseline",
+    "one runtime-only synchronization or data-preparation improvement matching measured bottleneck",
+    "at most one further separately measured runtime change if budget remains"
+  ],
+  "disallowed": [
+    "more GPUs",
+    "AMP/BF16/TF32",
+    "changing formal stage3 trials or selection",
+    "sealed data",
+    "paidAPI",
+    "unbounded compile/tuning",
+    "dummy work just to raise utilization"
+  ],
+  "equivalence": {
+    "loss_abs": 1e-06,
+    "gradient_norm_abs": 1e-05,
+    "parameters_abs": 2e-06,
+    "optimizer_state_abs": 2e-06,
+    "relative": 0.0001,
+    "same_sample_ids_order": true,
+    "same_optimizer_steps": true,
+    "finite_all": true,
+    "same_RNG_restore": true
+  },
+  "measurement": {
+    "warmup_optimizer_steps": 10,
+    "measured_optimizer_steps": 30,
+    "unit": "training windows/s",
+    "gpu_telemetry": "UUID-only utilization,power,memory,temperature,foreign PID check",
+    "memory_ceiling_fraction": 0.9,
+    "material_gain_fraction": 0.05,
+    "target_mean_gpu_util_pct": 85,
+    "ddp_efficiency": "not applicable single GPU"
+  },
+  "confirmation": "selected runtime must pass real train->internaldev validation->checkpoint->continued-update cycle;benchmark weights never replace formal selected model",
+  "report": "evidence/stage3/performance-summary.json;include real timings,candidates,failures/equivalence,telemetry,budget and remaining bottleneck;do not promise85pct",
+  "fallback": "if no faster safe candidate passes within budget,retain original runtime and report outcome truthfully",
+  "summary_required_fields": {
+    "status": "completed after bounded test even if original runtime retained",
+    "selected_equivalence_passed": true,
+    "tuning_budget_seconds": 110,
+    "tuning_total_seconds": "actual active tuning wall seconds<=110;exclude external waiting",
+    "selected_runtime": "actual selected runtime details or original unchanged baseline",
+    "candidates": "real reports with timings/telemetry/numeric checks/failures"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "recorded_at": "2026-10-19T14:36:09.348693+00:00",
+  "status": "recorded before RoPE-off launch",
+  "purpose": "supplement best-dev comparison with an equal-update comparison;no additional training",
+  "fixed_epoch": 3,
+  "optimizer_steps": 1302,
+  "effective_batch": 32,
+  "seed": 20261019,
+  "controls": "same selected encoder LR,head LR,training order,FP32,window and validation set;only span-head RoPE changes",
+  "main_selection": "best dev checkpoint under same max10/patience3 protocol;actual early stops may differ",
+  "interpretation": "fixed3 comparison is an auxiliary development analysis,not a pre-registered final-test claim;BERT positional embeddings remain"
+}

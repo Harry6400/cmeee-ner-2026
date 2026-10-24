@@ -1,0 +1,20 @@
+{
+  "target_instance": "qha40gpu-2",
+  "runtime_mode": "single_gpu_fp32_bounded_smoke",
+  "dataset": "official CMeEE-V2; existing frozen split",
+  "split": "128 train, 64 internal dev; no sealed contents",
+  "train_or_validation_or_test": "smoke training and development validation only",
+  "checkpoint_source": "N0 random initialization; N1 pinned official BERT; own stage2 resume",
+  "output_dir": "/nfsdata_a40/cyf/codes/CT/cmeee_ner",
+  "allowed_actions": ["project-contained setup/cache/download", "D0 CPU baseline", "N0 and N1 sequential GPU smoke", "own checkpoint save/resume", "copy necessary inference weights to Mac", "local CPU inference"],
+  "forbidden_actions": ["paid API", "full training", "holdout evaluation", "other GPUs", "other process or instance lifecycle changes", "writes outside project root"],
+  "authorized_gpu_uuids": ["GPU-f77a1700-de70-05d2-048f-18c8f9aa5974"],
+  "continuous_run_budget": "600 seconds aggregate for GPU-initialized processes, with reserved closure time",
+  "resource_gate": "CPU setup allowed; GPU launch requires fresh identity/process/memory/storage PASS",
+  "project_size_limit_gb": 50,
+  "minimum_disk_free_gb": 20,
+  "api_enabled": false,
+  "cost_opening_cny": "3.792488",
+  "cost_limit_cny": "100",
+  "local_checkpoint_copy": "explicitly authorized by user; inference weights only"
+}

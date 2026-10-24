@@ -1,0 +1,103 @@
+{
+  "status": "stage3_executed_internal_dev_only",
+  "selection_split": "internal_dev_only",
+  "seed": 20261019,
+  "preserve_negative_and_tied_results": true,
+  "no_sealed_data_for_selection": true,
+  "experiments": [
+    {
+      "id": "A1",
+      "principle": "分词与边界",
+      "method": "D0",
+      "changed": "允许字符边界 vs jieba词边界限制",
+      "fixed": "相同训练词典、同词多类规则与开发样本",
+      "record": [
+        "严格实体P/R/F1",
+        "嵌套召回",
+        "分词错误案例",
+        "延迟"
+      ],
+      "status": "completed_on_internal_dev",
+      "evidence": [
+        "runs/stage3-20261019/baselines/summary.json",
+        "runs/stage3-20261019/baselines/boundary-cases.json"
+      ]
+    },
+    {
+      "id": "A2",
+      "principle": "位置编码",
+      "method": "N1",
+      "changed": {
+        "rope": [
+          true,
+          false
+        ]
+      },
+      "fixed": "同一选定学习率、种子、窗口、有效批量、最大10轮与patience3；实际停止轮数另报；固定3轮辅助对照",
+      "record": [
+        "严格实体P/R/F1",
+        "嵌套召回",
+        "训练时长",
+        "峰值显存"
+      ],
+      "interpretation": "仅解释跨度头RoPE；BERT内部绝对位置编码仍保留",
+      "status": "completed_on_internal_dev",
+      "evidence": [
+        "configs/rope-comparison-plan.json",
+        "evidence/stage3/final-verification.json"
+      ],
+      "budget_interpretation": "best-dev under same max10/patience3 plus fixed3epoch/1302update auxiliary comparison;actual early-stopping epochs reported separately"
+    },
+    {
+      "id": "A3",
+      "principle": "参数选择",
+      "method": "N1",
+      "changed": {
+        "encoder_lr": [
+          1e-05,
+          3e-05,
+          5e-05
+        ]
+      },
+      "fixed": "RoPE开启、跨度头lr=0.001、种子、样本、窗口、有效批量和早停规则",
+      "record": [
+        "每轮开发F1",
+        "loss",
+        "早停轮数",
+        "耗时"
+      ],
+      "selection": "最高开发F1；并列先选更低学习率",
+      "status": "completed_on_internal_dev",
+      "evidence": [
+        "runs/stage3-20261019/lr-selection.json",
+        "runs/stage3-20261019/N1-lr-1e-05/summary.json",
+        "runs/stage3-20261019/N1-lr-3e-05/summary.json",
+        "runs/stage3-20261019/N1-lr-5e-05/summary.json"
+      ]
+    },
+    {
+      "id": "A4",
+      "principle": "标签约束与评估口径",
+      "changed": "严格实体 vs 仅诊断用宽松边界匹配；平面BIO覆盖上限",
+      "fixed": "同一份预测与参考，主指标始终严格实体",
+      "record": [
+        "单层不重叠区间的最大参考覆盖数",
+        "嵌套/平面分层",
+        "边界/类型错误"
+      ],
+      "status": "completed_on_internal_dev",
+      "evidence": [
+        "runs/stage3-20261019/baselines/flat-bio-upper-bound.json",
+        "runs/stage3-20261019/structural-recall.json",
+        "evidence/stage3/final-verification.json"
+      ]
+    }
+  ],
+  "stage3_order": [
+    "D0边界对照",
+    "N0/N1开发训练及N1学习率选择",
+    "选定学习率的RoPE对照",
+    "指标诊断与协议冻结"
+  ],
+  "coursework_requirement": "分词边界、结构覆盖、跨度头位置编码、指标口径已绑定真实开发数据；正式报告解释仍在后续阶段"
+}
